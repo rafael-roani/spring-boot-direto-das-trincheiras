@@ -2,6 +2,7 @@ package dev.rafa.animeservice.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
@@ -16,14 +17,14 @@ public class Anime {
 
     private String name;
 
-    public static List<Anime> getAnimes() {
-        List<Anime> animeList = new ArrayList<>();
-        animeList.add(new Anime(1L, "One Piece"));
-        animeList.add(new Anime(2L, "Naruto"));
-        animeList.add(new Anime(3L, "Dragon Ball"));
-        animeList.add(new Anime(4L, "Sword Art Online"));
+    @Getter
+    private static List<Anime> animes = new ArrayList<>();
 
-        return animeList;
+    static {
+        animes.add(new Anime(1L, "One Piece"));
+        animes.add(new Anime(2L, "Naruto"));
+        animes.add(new Anime(3L, "Dragon Ball"));
+        animes.add(new Anime(4L, "Sword Art Online"));
     }
 
 }
