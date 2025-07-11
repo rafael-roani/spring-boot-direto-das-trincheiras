@@ -1,6 +1,8 @@
 package dev.rafa.animeservice.controller;
 
 import dev.rafa.animeservice.domain.Producer;
+import dev.rafa.animeservice.request.ProducerPostRequest;
+import dev.rafa.animeservice.response.ProducerGetResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -51,18 +54,24 @@ public class ProducerController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE,
             headers = "X-api-key")
-    public ResponseEntity<Producer> save(@RequestBody Producer producer, @RequestHeader HttpHeaders headers) {
+    public ResponseEntity<ProducerGetResponse> save(@RequestBody ProducerPostRequest producerPostRequest, @RequestHeader HttpHeaders headers) {
         log.info("headers: {}", headers.toSingleValueMap());
-        producer.setId(ThreadLocalRandom.current().nextLong(1, 100_000));
+
+        Producer producer = Producer.builder()
+                .id(ThreadLocalRandom.current().nextLong(1, 100_000))
+                .name(producerPostRequest.getName())
+                .createdAt(LocalDateTime.now())
+                .build();
+
         Producer.getProducers().add(producer);
 
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.setContentType(MediaType.APPLICATION_JSON);
-        responseHeaders.add("Authorization", "My Key");
+        ProducerGetResponse response = ProducerGetResponse.builder()
+                .id(producer.getId())
+                .name(producer.getName())
+                .createdAt(producer.getCreatedAt())
+                .build();
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .headers(responseHeaders)
-                .body(producer);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
 }
