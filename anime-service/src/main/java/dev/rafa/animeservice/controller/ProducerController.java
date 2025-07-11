@@ -1,6 +1,7 @@
 package dev.rafa.animeservice.controller;
 
 import dev.rafa.animeservice.domain.Producer;
+import dev.rafa.animeservice.mapper.ProducerMapper;
 import dev.rafa.animeservice.request.ProducerPostRequest;
 import dev.rafa.animeservice.response.ProducerGetResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,8 @@ import java.util.concurrent.ThreadLocalRandom;
 @RestController
 @RequestMapping("v1/producers")
 public class ProducerController {
+
+    private static final ProducerMapper MAPPER = ProducerMapper.INSTANCE;
 
     @GetMapping
     public ResponseEntity<List<Producer>> listAll(@RequestParam(required = false) String name) {
@@ -57,19 +60,10 @@ public class ProducerController {
     public ResponseEntity<ProducerGetResponse> save(@RequestBody ProducerPostRequest producerPostRequest, @RequestHeader HttpHeaders headers) {
         log.info("headers: {}", headers.toSingleValueMap());
 
-        Producer producer = Producer.builder()
-                .id(ThreadLocalRandom.current().nextLong(1, 100_000))
-                .name(producerPostRequest.getName())
-                .createdAt(LocalDateTime.now())
-                .build();
+        Producer producer = MAPPER.toProducer(producerPostRequest);
+        ProducerGetResponse response = MAPPER.toProducerGetResponse(producer);
 
         Producer.getProducers().add(producer);
-
-        ProducerGetResponse response = ProducerGetResponse.builder()
-                .id(producer.getId())
-                .name(producer.getName())
-                .createdAt(producer.getCreatedAt())
-                .build();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
