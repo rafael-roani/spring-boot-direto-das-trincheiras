@@ -3,6 +3,7 @@ package dev.rafa.animeservice.controller;
 import dev.rafa.animeservice.domain.Producer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,7 +56,13 @@ public class ProducerController {
         producer.setId(ThreadLocalRandom.current().nextLong(1, 100_000));
         Producer.getProducers().add(producer);
 
-        return ResponseEntity.ok(producer);
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setContentType(MediaType.APPLICATION_JSON);
+        responseHeaders.add("Authorization", "My Key");
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .headers(responseHeaders)
+                .body(producer);
     }
 
 }
