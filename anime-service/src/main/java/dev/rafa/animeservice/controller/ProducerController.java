@@ -18,9 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 @Slf4j
 @RestController
@@ -30,7 +28,9 @@ public class ProducerController {
     private static final ProducerMapper MAPPER = ProducerMapper.INSTANCE;
 
     @GetMapping
-    public ResponseEntity<List<Producer>> listAll(@RequestParam(required = false) String name) {
+    public ResponseEntity<List<ProducerGetResponse>> listAll(@RequestParam(required = false) String name) {
+        log.debug("Request received to list all producers, param name '{}'", name);
+
         List<Producer> producers;
 
         if (name == null) {
@@ -42,23 +42,30 @@ public class ProducerController {
                     .toList();
         }
 
-        return ResponseEntity.ok(producers);
+        List<ProducerGetResponse> response = MAPPER.toProducerGetResponseList(producers);
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Producer> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(Producer.getProducers()
+    public ResponseEntity<ProducerGetResponse> findById(@PathVariable Long id) {
+        log.debug("Request to find producer by id: {}", id);
+
+        ProducerGetResponse response = Producer.getProducers()
                 .stream()
                 .filter(a -> a.getId().equals(id))
                 .findFirst()
-                .orElse(null)
-        );
+                .map(MAPPER::toProducerGetResponse)
+                .orElse(null);
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE,
             headers = "X-api-key")
     public ResponseEntity<ProducerGetResponse> save(@RequestBody ProducerPostRequest producerPostRequest, @RequestHeader HttpHeaders headers) {
         log.info("headers: {}", headers.toSingleValueMap());
+        log.debug("Saving producer: {}", producerPostRequest);
 
         Producer producer = MAPPER.toProducer(producerPostRequest);
         ProducerGetResponse response = MAPPER.toProducerGetResponse(producer);
