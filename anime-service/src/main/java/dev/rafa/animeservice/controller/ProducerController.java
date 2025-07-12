@@ -5,6 +5,7 @@ import dev.rafa.animeservice.mapper.ProducerMapper;
 import dev.rafa.animeservice.request.ProducerPostRequest;
 import dev.rafa.animeservice.request.ProducerPutRequest;
 import dev.rafa.animeservice.response.ProducerGetResponse;
+import dev.rafa.animeservice.response.ProducerPostResponse;
 import dev.rafa.animeservice.service.ProducerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -52,7 +53,7 @@ public class ProducerController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE,
             headers = "X-api-key")
-    public ResponseEntity<ProducerGetResponse> save(@RequestBody ProducerPostRequest producerPostRequest, @RequestHeader HttpHeaders headers) {
+    public ResponseEntity<ProducerPostResponse> save(@RequestBody ProducerPostRequest producerPostRequest, @RequestHeader HttpHeaders headers) {
         log.info("headers: {}", headers.toSingleValueMap());
         log.debug("Saving producer: {}", producerPostRequest);
 
@@ -60,7 +61,7 @@ public class ProducerController {
 
         Producer savedProducer = service.save(producer);
 
-        ProducerGetResponse response = MAPPER.toProducerGetResponse(savedProducer);
+        ProducerPostResponse response = MAPPER.toProducerPostResponse(savedProducer);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

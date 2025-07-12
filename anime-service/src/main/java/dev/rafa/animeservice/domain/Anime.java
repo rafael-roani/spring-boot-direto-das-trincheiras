@@ -1,30 +1,22 @@
 package dev.rafa.animeservice.domain;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@Data
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class Anime {
 
     private Long id;
 
     private String name;
-
-    @Getter
-    private static List<Anime> animes = new ArrayList<>();
-
-    static {
-        animes.add(new Anime(1L, "One Piece"));
-        animes.add(new Anime(2L, "Naruto"));
-        animes.add(new Anime(3L, "Dragon Ball"));
-        animes.add(new Anime(4L, "Sword Art Online"));
-    }
 
 }
