@@ -1,6 +1,10 @@
 package dev.rafa.animeservice.repository;
 
 import dev.rafa.animeservice.domain.Producer;
+import external.dependency.Connection;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -8,10 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Repository
+@RequiredArgsConstructor
 public class ProducerHardCodedRepository {
 
     private static final List<Producer> PRODUCERS = new ArrayList<>();
+
+    @Qualifier("connectionMySql")
+    private final Connection connection;
 
     static {
         PRODUCERS.add(
@@ -38,6 +47,7 @@ public class ProducerHardCodedRepository {
     }
 
     public List<Producer> findAll() {
+        log.debug("{}", connection);
         return PRODUCERS;
     }
 
