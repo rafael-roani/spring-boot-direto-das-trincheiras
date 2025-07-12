@@ -1,12 +1,13 @@
 package dev.rafa.animeservice.repository;
 
 import dev.rafa.animeservice.domain.Anime;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+@Repository
 public class AnimeHardCodeRepository {
 
     private static final List<Anime> ANIMES = new ArrayList<>();
