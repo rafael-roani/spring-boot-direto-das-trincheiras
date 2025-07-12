@@ -5,6 +5,7 @@ import dev.rafa.animeservice.mapper.ProducerMapper;
 import dev.rafa.animeservice.request.ProducerPostRequest;
 import dev.rafa.animeservice.request.ProducerPutRequest;
 import dev.rafa.animeservice.response.ProducerGetResponse;
+import dev.rafa.animeservice.service.ProducerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,20 +23,17 @@ public class ProducerController {
 
     private static final ProducerMapper MAPPER = ProducerMapper.INSTANCE;
 
+    private final ProducerService service;
+
+    public ProducerController() {
+        this.service = new ProducerService();
+    }
+
     @GetMapping
     public ResponseEntity<List<ProducerGetResponse>> listAll(@RequestParam(required = false) String name) {
         log.debug("Request received to list all producers, param name '{}'", name);
 
-        List<Producer> producers;
-
-        if (name == null) {
-            producers = Producer.getProducers();
-        } else {
-            producers = Producer.getProducers()
-                    .stream()
-                    .filter(a -> a.getName().equalsIgnoreCase(name))
-                    .toList();
-        }
+        List<Producer> producers = service.findAll(name);
 
         List<ProducerGetResponse> response = MAPPER.toProducerGetResponseList(producers);
 
@@ -46,12 +44,8 @@ public class ProducerController {
     public ResponseEntity<ProducerGetResponse> findById(@PathVariable Long id) {
         log.debug("Request to find producer by id: {}", id);
 
-        ProducerGetResponse response = Producer.getProducers()
-                .stream()
-                .filter(a -> a.getId().equals(id))
-                .findFirst()
-                .map(MAPPER::toProducerGetResponse)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producer not found"));
+        Producer producer = service.findByIdOrThrowNotFound(id);
+        ProducerGetResponse response = MAPPER.toProducerGetResponse(producer);
 
         return ResponseEntity.ok(response);
     }
@@ -63,9 +57,10 @@ public class ProducerController {
         log.debug("Saving producer: {}", producerPostRequest);
 
         Producer producer = MAPPER.toProducer(producerPostRequest);
-        ProducerGetResponse response = MAPPER.toProducerGetResponse(producer);
 
-        Producer.getProducers().add(producer);
+        Producer savedProducer = service.save(producer);
+
+        ProducerGetResponse response = MAPPER.toProducerGetResponse(savedProducer);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -74,12 +69,7 @@ public class ProducerController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.debug("Deleting producer by id: {}", id);
 
-        Producer producerToDelete = Producer.getProducers().stream()
-                .filter(a -> a.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producer not found"));
-
-        Producer.getProducers().remove(producerToDelete);
+        service.delete(id);
 
         return ResponseEntity.noContent().build();
     }
@@ -88,15 +78,9 @@ public class ProducerController {
     public ResponseEntity<Void> update(@RequestBody ProducerPutRequest request) {
         log.debug("Updating producer: {}", request);
 
-        Producer producerToUpdated = Producer.getProducers().stream()
-                .filter(a -> a.getId().equals(request.getId()))
-                .findFirst()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Producer not found"));
+        Producer producerToUpdate = MAPPER.toProducer(request);
 
-        Producer producerUpdated = MAPPER.toProducer(request, producerToUpdated.getCreatedAt());
-
-        Producer.getProducers().remove(producerToUpdated);
-        Producer.getProducers().add(producerUpdated);
+        service.update(producerToUpdate);
 
         return ResponseEntity.noContent().build();
     }
