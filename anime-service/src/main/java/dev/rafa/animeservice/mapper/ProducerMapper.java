@@ -4,11 +4,11 @@ import dev.rafa.animeservice.domain.Producer;
 import dev.rafa.animeservice.request.ProducerPostRequest;
 import dev.rafa.animeservice.request.ProducerPutRequest;
 import dev.rafa.animeservice.response.ProducerGetResponse;
+import dev.rafa.animeservice.response.ProducerPostResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -25,5 +25,7 @@ public interface ProducerMapper {
     List<ProducerGetResponse> toProducerGetResponseList(List<Producer> producers);
 
     Producer toProducer(ProducerPutRequest request);
+
+    ProducerPostResponse toProducerPostResponse(Producer producer);
 
 }
