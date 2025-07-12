@@ -1,6 +1,7 @@
 package dev.rafa.animeservice.controller;
 
 import dev.rafa.animeservice.domain.Anime;
+import dev.rafa.animeservice.domain.Producer;
 import dev.rafa.animeservice.mapper.AnimeMapper;
 import dev.rafa.animeservice.request.AnimePostRequest;
 import dev.rafa.animeservice.response.AnimeGetResponse;
@@ -8,6 +9,7 @@ import dev.rafa.animeservice.response.AnimePostResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -71,6 +73,20 @@ public class AnimeController {
         AnimePostResponse response = MAPPER.toAnimePostResponse(anime);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        log.debug("Deleting anime by id: {}", id);
+
+        Anime animeToDelete = Anime.getAnimes().stream()
+                .filter(a -> a.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Anime not found"));
+
+        Anime.getAnimes().remove(animeToDelete);
+
+        return ResponseEntity.noContent().build();
     }
 
 }
