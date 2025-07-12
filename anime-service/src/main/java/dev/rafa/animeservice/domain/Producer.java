@@ -2,6 +2,7 @@ package dev.rafa.animeservice.domain;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Data
 @Builder
+@EqualsAndHashCode(of = "id")
 public class Producer {
 
     private Long id;
