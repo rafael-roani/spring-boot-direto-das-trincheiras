@@ -2,9 +2,7 @@ package dev.rafa.animeservice.repository;
 
 import dev.rafa.animeservice.domain.Producer;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
@@ -14,8 +12,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ProducerHardCodedRepositoryTest {
 
     @InjectMocks
@@ -50,8 +50,9 @@ class ProducerHardCodedRepositoryTest {
     }
 
     @Test
+    @Order(1)
     @DisplayName("findAll returns a list with all producers")
-    void findAll_ReturnAllProducers_WhenSuccessful() {
+    void findAll_ReturnsAllProducers_WhenSuccessful() {
         BDDMockito.when(producerData.getProducers()).thenReturn(producerList);
 
         List<Producer> producers = repository.findAll();
@@ -60,6 +61,46 @@ class ProducerHardCodedRepositoryTest {
                 .hasSize(producerList.size())
                 .containsAll(this.producerList);
 
+    }
+
+    @Test
+    @Order(2)
+    @DisplayName("findById returns an object with given id")
+    void findAll_ReturnsProducerById_WhenSuccessful() {
+        BDDMockito.when(producerData.getProducers()).thenReturn(producerList);
+
+        Producer expectedProducer = producerList.getFirst();
+        Optional<Producer> producer = repository.findById(expectedProducer.getId());
+
+        Assertions.assertThat(producer)
+                .isPresent()
+                .contains(expectedProducer);
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("findByName returns empty list when name is null")
+    void findById_ReturnsEmptyList_WhenNameIsNull() {
+        BDDMockito.when(producerData.getProducers()).thenReturn(producerList);
+
+        List<Producer> producers = repository.findByName(null);
+        Assertions.assertThat(producers)
+                .isNotNull()
+                .isEmpty();
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("findByName returns list with found object when name is exists")
+    void findById_ReturnsFoundProducerInList_WhenNameIsFound() {
+        BDDMockito.when(producerData.getProducers()).thenReturn(producerList);
+
+        Producer expectedProducer = producerList.getFirst();
+        List<Producer> producers = repository.findByName(expectedProducer.getName());
+        Assertions.assertThat(producers)
+                .isNotNull()
+                .isNotEmpty()
+                .contains(expectedProducer);
     }
 
 }
