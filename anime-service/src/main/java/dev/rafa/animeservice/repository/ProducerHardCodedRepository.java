@@ -17,48 +17,24 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProducerHardCodedRepository {
 
-    private static final List<Producer> PRODUCERS = new ArrayList<>();
+    private final ProducerData producerData;
 
     @Qualifier("connectionMySql")
     private final Connection connection;
 
-    static {
-        PRODUCERS.add(
-                Producer.builder()
-                        .id(1L)
-                        .name("Mappa")
-                        .createdAt(LocalDateTime.now())
-                        .build()
-        );
-        PRODUCERS.add(
-                Producer.builder()
-                        .id(2L)
-                        .name("Kyoto Animation")
-                        .createdAt(LocalDateTime.now())
-                        .build()
-        );
-        PRODUCERS.add(
-                Producer.builder()
-                        .id(3L)
-                        .name("Madhouse")
-                        .createdAt(LocalDateTime.now())
-                        .build()
-        );
-    }
-
     public List<Producer> findAll() {
         log.debug("{}", connection);
-        return PRODUCERS;
+        return producerData.getProducers();
     }
 
     public Optional<Producer> findById(Long id) {
-        return PRODUCERS.stream()
+        return producerData.getProducers().stream()
                 .filter(a -> a.getId().equals(id))
                 .findFirst();
     }
 
     public List<Producer> findByName(String name) {
-        return PRODUCERS.stream()
+        return producerData.getProducers().stream()
                 .filter(a -> a.getName().equalsIgnoreCase(name))
                 .toList();
     }
@@ -69,12 +45,12 @@ public class ProducerHardCodedRepository {
     }
 
     public Producer save(Producer producer) {
-        PRODUCERS.add(producer);
+        producerData.getProducers().add(producer);
         return producer;
     }
 
     public void delete(Producer producer) {
-        PRODUCERS.remove(producer);
+        producerData.getProducers().remove(producer);
     }
 
 }
