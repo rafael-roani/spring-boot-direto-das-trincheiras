@@ -179,8 +179,6 @@ class ProducerServiceTest {
                 .thenReturn(Optional.of(producerToUpdate));
         BDDMockito.doNothing().when(repository).update(producerToUpdate);
 
-        service.update(producerToUpdate);
-
         Assertions.assertThatNoException().isThrownBy(() -> service.update(producerToUpdate));
     }
 
