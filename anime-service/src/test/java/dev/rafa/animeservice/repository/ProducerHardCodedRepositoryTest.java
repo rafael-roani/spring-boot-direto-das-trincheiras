@@ -24,7 +24,7 @@ class ProducerHardCodedRepositoryTest {
     @Mock
     private ProducerData producerData;
 
-    private final List<Producer> producerList = new ArrayList<>();
+    private List<Producer> producerList;
 
     @BeforeEach
     void init() {
@@ -46,7 +46,7 @@ class ProducerHardCodedRepositoryTest {
                 .createdAt(LocalDateTime.now())
                 .build();
 
-        producerList.addAll(List.of(ufotable, witStudio, studioGhibli));
+        producerList = new ArrayList<>(List.of(ufotable, witStudio, studioGhibli));
     }
 
     @Test
