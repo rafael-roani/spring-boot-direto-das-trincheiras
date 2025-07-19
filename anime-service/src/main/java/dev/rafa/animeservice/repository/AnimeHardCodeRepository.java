@@ -1,36 +1,30 @@
 package dev.rafa.animeservice.repository;
 
 import dev.rafa.animeservice.domain.Anime;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
+@RequiredArgsConstructor
 public class AnimeHardCodeRepository {
 
-    private static final List<Anime> ANIMES = new ArrayList<>();
-
-    static {
-        ANIMES.add(new Anime(1L, "One Piece"));
-        ANIMES.add(new Anime(2L, "Naruto"));
-        ANIMES.add(new Anime(3L, "Dragon Ball"));
-        ANIMES.add(new Anime(4L, "Sword Art Online"));
-    }
+    private final AnimeData animeData;
 
     public List<Anime> findAll() {
-        return ANIMES;
+        return animeData.getAnimes();
     }
 
     public Optional<Anime> findById(Long id) {
-        return ANIMES.stream()
+        return animeData.getAnimes().stream()
                 .filter(anime -> anime.getId().equals(id))
                 .findFirst();
     }
 
     public List<Anime> findByName(String name) {
-        return ANIMES.stream()
+        return animeData.getAnimes().stream()
                 .filter(anime -> anime.getName().equalsIgnoreCase(name))
                 .toList();
     }
@@ -41,12 +35,12 @@ public class AnimeHardCodeRepository {
     }
 
     public Anime save(Anime anime) {
-        ANIMES.add(anime);
+        animeData.getAnimes().add(anime);
         return anime;
     }
 
     public void delete(Anime anime) {
-        ANIMES.remove(anime);
+        animeData.getAnimes().remove(anime);
     }
 
 }
