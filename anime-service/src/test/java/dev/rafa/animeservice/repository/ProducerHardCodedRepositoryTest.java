@@ -92,7 +92,7 @@ class ProducerHardCodedRepositoryTest {
     @Test
     @Order(4)
     @DisplayName("findByName returns list with found object when name is exists")
-    void findById_ReturnsFoundProducerInList_WhenNameIsFound() {
+    void findByName_ReturnsFoundProducerInList_WhenNameIsFound() {
         BDDMockito.when(producerData.getProducers()).thenReturn(producerList);
 
         Producer expectedProducer = producerList.getFirst();
