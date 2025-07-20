@@ -17,11 +17,7 @@ public class ProducerHardCodedRepository {
 
     private final ProducerData producerData;
 
-    @Qualifier("connectionMySql")
-    private final Connection connection;
-
     public List<Producer> findAll() {
-        log.debug("{}", connection);
         return producerData.getProducers();
     }
 
