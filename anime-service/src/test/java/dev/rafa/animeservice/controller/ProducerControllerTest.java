@@ -1,29 +1,30 @@
 package dev.rafa.animeservice.controller;
 
 import dev.rafa.animeservice.domain.Producer;
-import dev.rafa.animeservice.mapper.ProducerMapperImpl;
 import dev.rafa.animeservice.repository.ProducerData;
-import dev.rafa.animeservice.repository.ProducerHardCodedRepository;
-import dev.rafa.animeservice.service.ProducerService;
 import org.junit.jupiter.api.*;
 import org.mockito.BDDMockito;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @WebMvcTest(controllers = ProducerController.class)
-@Import({ProducerMapperImpl.class, ProducerService.class, ProducerHardCodedRepository.class, ProducerData.class})
+@ComponentScan(basePackages = {"dev.rafa.animeservice"})
 class ProducerControllerTest {
 
     @Autowired
@@ -34,24 +35,30 @@ class ProducerControllerTest {
 
     private List<Producer> producerList;
 
+    @Autowired
+    private ResourceLoader resourceLoader;
+
     @BeforeEach
     void init() {
+        String dateTime = "2025-07-19T17:54:51.1550735";
+        LocalDateTime localDateTime = LocalDateTime.parse(dateTime);
+
         Producer ufotable = Producer.builder()
                 .id(1L)
                 .name("Ufotable")
-                .createdAt(LocalDateTime.now())
+                .createdAt(localDateTime)
                 .build();
 
         Producer witStudio = Producer.builder()
                 .id(2L)
                 .name("Wit Studio")
-                .createdAt(LocalDateTime.now())
+                .createdAt(localDateTime)
                 .build();
 
         Producer studioGhibli = Producer.builder()
                 .id(3L)
                 .name("Studio Ghibli")
-                .createdAt(LocalDateTime.now())
+                .createdAt(localDateTime)
                 .build();
 
         producerList = new ArrayList<>(List.of(ufotable, witStudio, studioGhibli));
@@ -62,11 +69,17 @@ class ProducerControllerTest {
     @DisplayName("findAll returns a list with all producers when argument is null")
     void findAll_ReturnsAllProducers_WhenArgumentIsNull() throws Exception {
         BDDMockito.when(producerData.getProducers()).thenReturn(producerList);
+        String response = readResourceFile("producer/get-producer-null-name-200.json");
 
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/producers"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].id").value(1L));
+                .andExpect(MockMvcResultMatchers.content().json(response));
+    }
+
+    private String readResourceFile(String fileName) throws IOException {
+        File file = resourceLoader.getResource("classpath:%s".formatted(fileName)).getFile();
+        return new String(Files.readAllBytes(file.toPath()));
     }
 
 }
