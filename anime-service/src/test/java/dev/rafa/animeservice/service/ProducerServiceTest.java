@@ -99,7 +99,7 @@ class ProducerServiceTest {
     @Test
     @Order(4)
     @DisplayName("findById returns an object with given id")
-    void findAll_ReturnsProducerById_WhenSuccessful() {
+    void findById_ReturnsProducerById_WhenSuccessful() {
         Producer expectedProducer = producerList.getFirst();
         BDDMockito.when(repository.findById(expectedProducer.getId()))
                 .thenReturn(Optional.of(expectedProducer));
