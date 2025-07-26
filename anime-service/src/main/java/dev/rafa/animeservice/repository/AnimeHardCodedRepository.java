@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class AnimeHardCodeRepository {
+public class AnimeHardCodedRepository {
 
     private final AnimeData animeData;
 

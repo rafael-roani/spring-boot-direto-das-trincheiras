@@ -1,7 +1,7 @@
 package dev.rafa.animeservice.service;
 
 import dev.rafa.animeservice.domain.Anime;
-import dev.rafa.animeservice.repository.AnimeHardCodeRepository;
+import dev.rafa.animeservice.repository.AnimeHardCodedRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AnimeService {
 
-    private final AnimeHardCodeRepository repository;
+    private final AnimeHardCodedRepository repository;
 
     public List<Anime> findAll(String name) {
         return name == null ? repository.findAll() : repository.findByName(name);
