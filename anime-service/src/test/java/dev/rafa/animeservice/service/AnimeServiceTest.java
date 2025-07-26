@@ -1,7 +1,7 @@
 package dev.rafa.animeservice.service;
 
 import dev.rafa.animeservice.domain.Anime;
-import dev.rafa.animeservice.repository.AnimeHardCodeRepository;
+import dev.rafa.animeservice.repository.AnimeHardCodedRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +25,7 @@ class AnimeServiceTest {
     private AnimeService service;
 
     @Mock
-    private AnimeHardCodeRepository repository;
+    private AnimeHardCodedRepository repository;
 
     private List<Anime> animesList;
 
