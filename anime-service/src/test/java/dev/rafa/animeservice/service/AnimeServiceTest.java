@@ -1,5 +1,6 @@
 package dev.rafa.animeservice.service;
 
+import dev.rafa.animeservice.commons.AnimeUtils;
 import dev.rafa.animeservice.domain.Anime;
 import dev.rafa.animeservice.repository.AnimeHardCodedRepository;
 import org.assertj.core.api.Assertions;
@@ -12,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -29,12 +29,12 @@ class AnimeServiceTest {
 
     private List<Anime> animesList;
 
+    @InjectMocks
+    private AnimeUtils animeUtils;
+
     @BeforeEach
     void setUp() {
-        animesList = new ArrayList<>();
-        animesList.add(new Anime(1L, "Ful Metal Brotherhood"));
-        animesList.add(new Anime(2L, "Steins Gate"));
-        animesList.add(new Anime(3L, "Mashle"));
+        animesList = animeUtils.newAnimeList();
     }
 
     @Test
@@ -109,10 +109,7 @@ class AnimeServiceTest {
     @Order(6)
     @DisplayName("save creates an anime")
     void save_CreatesAnime_WhenSuccessful() {
-        Anime animeToSave = Anime.builder()
-                .id(99L)
-                .name("Pokemon")
-                .build();
+        Anime animeToSave = animeUtils.newAnimeToSave();
 
         BDDMockito.when(repository.save(animeToSave)).thenReturn(animeToSave);
 

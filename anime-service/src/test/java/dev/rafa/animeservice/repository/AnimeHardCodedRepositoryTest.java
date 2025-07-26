@@ -1,5 +1,6 @@
 package dev.rafa.animeservice.repository;
 
+import dev.rafa.animeservice.commons.AnimeUtils;
 import dev.rafa.animeservice.domain.Anime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
@@ -9,7 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,12 +25,12 @@ class AnimeHardCodedRepositoryTest {
 
     private List<Anime> animeList;
 
+    @InjectMocks
+    private AnimeUtils animeUtils;
+
     @BeforeEach
     void init() {
-        animeList = new ArrayList<>();
-        animeList.add(new Anime(1L, "Ful Metal Brotherhood"));
-        animeList.add(new Anime(2L, "Steins Gate"));
-        animeList.add(new Anime(3L, "Mashle"));
+        animeList = animeUtils.newAnimeList();
     }
 
     @Test
@@ -92,10 +92,7 @@ class AnimeHardCodedRepositoryTest {
     void save_CreatesAnime_WhenSuccessful() {
         BDDMockito.when(animeData.getAnimes()).thenReturn(animeList);
 
-        Anime animeToSave = Anime.builder()
-                .id(99L)
-                .name("Pokemon")
-                .build();
+        Anime animeToSave = animeUtils.newAnimeToSave();
 
         Anime anime = repository.save(animeToSave);
         Assertions.assertThat(anime)
