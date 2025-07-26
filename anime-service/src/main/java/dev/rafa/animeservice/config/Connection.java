@@ -1,4 +1,4 @@
-package external.dependency;
+package dev.rafa.animeservice.config;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

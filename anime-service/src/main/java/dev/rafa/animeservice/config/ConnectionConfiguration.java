@@ -1,6 +1,5 @@
 package dev.rafa.animeservice.config;
 
-import external.dependency.Connection;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +19,7 @@ public class ConnectionConfiguration {
 
     @Bean
     // @Primary
-    @Profile("mysql")
+    @Profile({"mysql", "test"})
     public Connection connectionMySql() {
         return new Connection(url, username, password);
     }

@@ -1,6 +1,6 @@
 package dev.rafa.animeservice.controller;
 
-import external.dependency.Connection;
+import dev.rafa.animeservice.config.Connection;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

@@ -1,10 +1,8 @@
 package dev.rafa.animeservice.repository;
 
 import dev.rafa.animeservice.domain.Producer;
-import external.dependency.Connection;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
