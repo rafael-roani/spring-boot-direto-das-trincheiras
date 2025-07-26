@@ -1,5 +1,6 @@
 package dev.rafa.animeservice.controller;
 
+import dev.rafa.animeservice.commons.FileUtils;
 import dev.rafa.animeservice.domain.Anime;
 import dev.rafa.animeservice.repository.AnimeData;
 import dev.rafa.animeservice.repository.AnimeHardCodedRepository;
@@ -11,16 +12,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +38,7 @@ class AnimeControllerTest {
     private List<Anime> animesList;
 
     @Autowired
-    private ResourceLoader resourceLoader;
+    private FileUtils fileUtils;
 
     @BeforeEach
     void init() {
@@ -56,7 +53,7 @@ class AnimeControllerTest {
     @DisplayName("GET v1/animes returns a list with all animes when argument is null")
     void findAll_ReturnsAllAnimes_WhenArgumentIsNull() throws Exception {
         BDDMockito.when(animeData.getAnimes()).thenReturn(animesList);
-        String response = readResourceFile("anime/get-anime-null-name-200.json");
+        String response = fileUtils.readResourceFile("anime/get-anime-null-name-200.json");
 
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/animes"))
                 .andDo(MockMvcResultHandlers.print())
@@ -69,7 +66,7 @@ class AnimeControllerTest {
     @DisplayName("GET v1/animes?name=Mashle returns a list with found object when name exists")
     void findAll_ReturnsFoundAnimeList_WhenNameIsFound() throws Exception {
         BDDMockito.when(animeData.getAnimes()).thenReturn(animesList);
-        String response = readResourceFile("anime/get-anime-mashle-name-200.json");
+        String response = fileUtils.readResourceFile("anime/get-anime-mashle-name-200.json");
         String name = "Mashle";
 
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/animes").param("name", name))
@@ -83,7 +80,7 @@ class AnimeControllerTest {
     @DisplayName("GET v1/animes?name=x returns empty list when name is not found")
     void findAll_ReturnsEmptyList_WhenNameIsNotFound() throws Exception {
         BDDMockito.when(animeData.getAnimes()).thenReturn(animesList);
-        String response = readResourceFile("anime/get-anime-x-name-200.json");
+        String response = fileUtils.readResourceFile("anime/get-anime-x-name-200.json");
         String name = "x";
 
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/animes").param("name", name))
@@ -97,7 +94,7 @@ class AnimeControllerTest {
     @DisplayName("GET v1/animes/1 returns an object with given id")
     void findById_ReturnsAnimeById_WhenSuccessful() throws Exception {
         BDDMockito.when(animeData.getAnimes()).thenReturn(animesList);
-        String response = readResourceFile("anime/get-anime-by-id-200.json");
+        String response = fileUtils.readResourceFile("anime/get-anime-by-id-200.json");
         Long id = 1L;
 
         mockMvc.perform(MockMvcRequestBuilders.get("/v1/animes/{id}", id))
@@ -123,8 +120,8 @@ class AnimeControllerTest {
     @Order(6)
     @DisplayName("POST v1/animes creates a anime")
     void save_CreatesAnime_WhenSuccessful() throws Exception {
-        String request = readResourceFile("anime/post-request-anime-200.json");
-        String response = readResourceFile("anime/post-response-anime-201.json");
+        String request = fileUtils.readResourceFile("anime/post-request-anime-200.json");
+        String response = fileUtils.readResourceFile("anime/post-response-anime-201.json");
 
         Anime animeToSave = Anime.builder()
                 .id(99L)
@@ -150,7 +147,7 @@ class AnimeControllerTest {
     @DisplayName("PUT v1/animes updates a anime")
     void update_UpdatesAnime_WhenSuccessful() throws Exception {
         BDDMockito.when(animeData.getAnimes()).thenReturn(animesList);
-        String request = readResourceFile("anime/put-request-anime-200.json");
+        String request = fileUtils.readResourceFile("anime/put-request-anime-200.json");
 
         mockMvc.perform(MockMvcRequestBuilders
                                 .put("/v1/animes")
@@ -166,7 +163,7 @@ class AnimeControllerTest {
     @DisplayName("PUT v1/animes throw ResponseStatusException when anime is not found")
     void update_ThrowResponseStatusException_WhenAnimeIsNotFound() throws Exception {
         BDDMockito.when(animeData.getAnimes()).thenReturn(animesList);
-        String request = readResourceFile("anime/put-request-anime-404.json");
+        String request = fileUtils.readResourceFile("anime/put-request-anime-404.json");
 
         mockMvc.perform(MockMvcRequestBuilders
                                 .put("/v1/animes")
@@ -201,11 +198,6 @@ class AnimeControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(MockMvcResultMatchers.status().reason("Anime not found"));
-    }
-
-    private String readResourceFile(String fileName) throws IOException {
-        File file = resourceLoader.getResource("classpath:%s".formatted(fileName)).getFile();
-        return new String(Files.readAllBytes(file.toPath()));
     }
 
 }

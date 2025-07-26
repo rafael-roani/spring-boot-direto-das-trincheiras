@@ -1,5 +1,6 @@
 package dev.rafa.animeservice.repository;
 
+import dev.rafa.animeservice.commons.ProducerUtils;
 import dev.rafa.animeservice.domain.Producer;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
@@ -9,8 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,27 +25,12 @@ class ProducerHardCodedRepositoryTest {
 
     private List<Producer> producerList;
 
+    @InjectMocks
+    private ProducerUtils producerUtils;
+
     @BeforeEach
     void init() {
-        Producer ufotable = Producer.builder()
-                .id(1L)
-                .name("Ufotable")
-                .createdAt(LocalDateTime.now())
-                .build();
-
-        Producer witStudio = Producer.builder()
-                .id(2L)
-                .name("Wit Studio")
-                .createdAt(LocalDateTime.now())
-                .build();
-
-        Producer studioGhibli = Producer.builder()
-                .id(3L)
-                .name("Studio Ghibli")
-                .createdAt(LocalDateTime.now())
-                .build();
-
-        producerList = new ArrayList<>(List.of(ufotable, witStudio, studioGhibli));
+        producerList = producerUtils.newProducerList();
     }
 
     @Test
@@ -109,11 +93,7 @@ class ProducerHardCodedRepositoryTest {
     void save_CreatesProducer_WhenSuccessful() {
         BDDMockito.when(producerData.getProducers()).thenReturn(producerList);
 
-        Producer producerToSave = Producer.builder()
-                .id(99L)
-                .name("MAPPA")
-                .createdAt(LocalDateTime.now())
-                .build();
+        Producer producerToSave = producerUtils.newProducerToSave();
 
         Producer producer = repository.save(producerToSave);
         Assertions.assertThat(producer)
