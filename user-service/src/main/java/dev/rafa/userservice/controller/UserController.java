@@ -7,6 +7,7 @@ import dev.rafa.userservice.request.UserPutRequest;
 import dev.rafa.userservice.response.UserGetResponse;
 import dev.rafa.userservice.response.UserPostResponse;
 import dev.rafa.userservice.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -48,7 +49,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserPostResponse> save(@RequestBody UserPostRequest userPostRequest) {
+    public ResponseEntity<UserPostResponse> save(@RequestBody @Valid UserPostRequest userPostRequest) {
         log.debug("Request to save user: {}", userPostRequest);
 
         User userToSave = mapper.toUser(userPostRequest);
@@ -70,7 +71,7 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<Void> update(@RequestBody UserPutRequest request) {
+    public ResponseEntity<Void> update(@RequestBody @Valid UserPutRequest request) {
         log.debug("Updating user: {}", request);
 
         User userToUpdate = mapper.toUser(request);
