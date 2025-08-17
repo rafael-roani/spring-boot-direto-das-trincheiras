@@ -117,12 +117,13 @@ class ProducerControllerTest {
     @DisplayName("GET v1/producers/99 throw NotFound 404 when producer is not found")
     void findByOd_ThrowsNotFound_WhenProducerIsNotFound() throws Exception {
         BDDMockito.when(producerData.getProducers()).thenReturn(producerList);
+        String response = fileUtils.readResourceFile("producer/get-producer-by-id-404.json");
         Long id = 99L;
 
         mockMvc.perform(MockMvcRequestBuilders.get(URL + "/{id}", id))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andExpect(MockMvcResultMatchers.status().reason("Producer not found"));
+                .andExpect(MockMvcResultMatchers.content().json(response));
     }
 
     @Test
@@ -170,6 +171,7 @@ class ProducerControllerTest {
     void update_ThrowNotFound_WhenProducerIsNotFound() throws Exception {
         BDDMockito.when(producerData.getProducers()).thenReturn(producerList);
         String request = fileUtils.readResourceFile("producer/put-request-producer-404.json");
+        String response = fileUtils.readResourceFile("producer/put-producer-by-id-404.json");
 
         mockMvc.perform(MockMvcRequestBuilders
                                 .put(URL)
@@ -178,7 +180,7 @@ class ProducerControllerTest {
                 )
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andExpect(MockMvcResultMatchers.status().reason("Producer not found"));
+                .andExpect(MockMvcResultMatchers.content().json(response));
     }
 
     @Test
@@ -198,12 +200,13 @@ class ProducerControllerTest {
     @DisplayName("DELETE v1/producers/99 throw NotFound when producer is not found")
     void delete_ThrowNotFound_WhenProducerIsNotFound() throws Exception {
         BDDMockito.when(producerData.getProducers()).thenReturn(producerList);
+        String response = fileUtils.readResourceFile("producer/delete-producer-by-id-404.json");
         Long id = 99L;
 
         mockMvc.perform(MockMvcRequestBuilders.delete(URL + "/{id}", id))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andExpect(MockMvcResultMatchers.status().reason("Producer not found"));
+                .andExpect(MockMvcResultMatchers.content().json(response));
     }
 
     @Order(11)
