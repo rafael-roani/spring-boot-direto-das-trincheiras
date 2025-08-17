@@ -1,11 +1,10 @@
 package dev.rafa.userservice.service;
 
 import dev.rafa.userservice.domain.User;
+import dev.rafa.userservice.exception.NotFoundException;
 import dev.rafa.userservice.repository.UserHardCodedRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -31,7 +30,7 @@ public class UserService {
 
     public User findByIdOrThrowNotFound(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     public User save(User user) {
