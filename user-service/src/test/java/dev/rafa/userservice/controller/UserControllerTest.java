@@ -115,8 +115,8 @@ class UserControllerTest {
 
     @Test
     @Order(5)
-    @DisplayName("GET v1/users/99 throw ResponseStatusException 404 when user is not found")
-    void findByOd_ThrowsResponseStatusException_WhenUserIsNotFound() throws Exception {
+    @DisplayName("GET v1/users/99 throw NotFound 404 when user is not found")
+    void findByOd_ThrowsNotFound_WhenUserIsNotFound() throws Exception {
         BDDMockito.when(userData.getUsers()).thenReturn(usersList);
         Long id = 99L;
 
@@ -167,8 +167,8 @@ class UserControllerTest {
 
     @Test
     @Order(8)
-    @DisplayName("PUT v1/users throw ResponseStatusException when user is not found")
-    void update_ThrowResponseStatusException_WhenUserIsNotFound() throws Exception {
+    @DisplayName("PUT v1/users throw NotFound when user is not found")
+    void update_ThrowNotFound_WhenUserIsNotFound() throws Exception {
         BDDMockito.when(userData.getUsers()).thenReturn(usersList);
         String request = fileUtils.readResourceFile("user/put-request-user-404.json");
 
@@ -196,8 +196,8 @@ class UserControllerTest {
 
     @Test
     @Order(10)
-    @DisplayName("DELETE v1/users/99 throw ResponseStatusException when user is not found")
-    void delete_ThrowResponseStatusException_WhenUserIsNotFound() throws Exception {
+    @DisplayName("DELETE v1/users/99 throw NotFound when user is not found")
+    void delete_ThrowNotFound_WhenUserIsNotFound() throws Exception {
         BDDMockito.when(userData.getUsers()).thenReturn(usersList);
         Long id = 99L;
 
