@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
@@ -209,7 +210,7 @@ class UserControllerTest {
     @Order(11)
     @ParameterizedTest
     @MethodSource("postUserBadRequestSource")
-    @DisplayName("POST v1/users returns bad request when fields are empty")
+    @DisplayName("POST v1/users returns bad request when fields are invalid")
     void save_ReturnsBadRequest_WhenFieldsAreEmpty(String fileName, List<String> errors) throws Exception {
         String request = fileUtils.readResourceFile("user/%s".formatted(fileName));
 
@@ -231,20 +232,66 @@ class UserControllerTest {
                 .contains(errors);
     }
 
+    @Order(12)
+    @ParameterizedTest
+    @MethodSource("putUserBadRequestSource")
+    @DisplayName("PUT v1/users returns bad request when fields are invalid")
+    void update_ReturnsBadRequest_WhenFieldsAreEmpty(String fileName, List<String> errors) throws Exception {
+        String request = fileUtils.readResourceFile("user/%s".formatted(fileName));
+
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                                                      .put(URL)
+                                                      .content(request)
+                                                      .header("X-api-key", "v1")
+                                                      .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andReturn();
+
+        Exception resolvedException = mvcResult.getResolvedException();
+
+        Assertions.assertThat(resolvedException).isNotNull();
+
+        Assertions.assertThat(resolvedException.getMessage())
+                .contains(errors);
+    }
+
     private static Stream<Arguments> postUserBadRequestSource() {
+        List<String> allRequiredErrors = allRequiredErrors();
+        List<String> emailInvalidErrors = invalidEmailErrors();
+
+        return Stream.of(
+                Arguments.of("post-request-user-empty-fields-400.json", allRequiredErrors),
+                Arguments.of("post-request-user-blank-fields-400.json", allRequiredErrors),
+                Arguments.of("post-request-user-invalid-email-400.json", emailInvalidErrors)
+        );
+    }
+
+    private static Stream<Arguments> putUserBadRequestSource() {
+        List<String> allRequiredErrors = allRequiredErrors();
+        List<String> emailInvalidErrors = invalidEmailErrors();
+
+        allRequiredErrors.add("The field 'id' cannot be null");
+
+        return Stream.of(
+                Arguments.of("put-request-user-empty-fields-400.json", allRequiredErrors),
+                Arguments.of("put-request-user-blank-fields-400.json", allRequiredErrors),
+                Arguments.of("put-request-user-invalid-email-400.json", emailInvalidErrors)
+        );
+    }
+
+    private static List<String> allRequiredErrors() {
         String firstNameRequiredError = "The field 'firstName' is required";
         String lastNameRequiredError = "The field 'lastName' is required";
         String emailRequiredError = "The field 'email' is required";
+
+        return new ArrayList<>(List.of(firstNameRequiredError, lastNameRequiredError, emailRequiredError));
+    }
+
+    private static List<String> invalidEmailErrors() {
         String emailInvalidError = "The e-mail is not valid";
-
-        List<String> allErrors = List.of(firstNameRequiredError, lastNameRequiredError, emailRequiredError);
-        List<String> emailList = Collections.singletonList(emailInvalidError);
-
-        return Stream.of(
-                Arguments.of("post-request-user-empty-fields-400.json", allErrors),
-                Arguments.of("post-request-user-blank-fields-400.json", allErrors),
-                Arguments.of("post-request-user-invalid-email-400.json", emailList)
-        );
+        return Collections.singletonList(emailInvalidError);
     }
 
 }
