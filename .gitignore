@@ -29,3 +29,7 @@ replay_pid*
 /commons-core/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
 /commons-core/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst
 /commons-core/target/maven-archiver/pom.properties
+
+### dotenv template
+.env
+
