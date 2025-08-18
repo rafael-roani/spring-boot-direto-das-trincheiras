@@ -1,4 +1,4 @@
-package dev.rafa.animeservice.exception;
+package dev.rafa.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
