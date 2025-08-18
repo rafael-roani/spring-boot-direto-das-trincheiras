@@ -1,7 +1,7 @@
 package dev.rafa.userservice.service;
 
+import dev.rafa.commonscore.exception.NotFoundException;
 import dev.rafa.userservice.domain.User;
-import dev.rafa.userservice.exception.NotFoundException;
 import dev.rafa.userservice.repository.UserHardCodedRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
