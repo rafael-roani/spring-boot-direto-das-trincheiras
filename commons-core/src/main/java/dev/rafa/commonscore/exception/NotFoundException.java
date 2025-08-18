@@ -1,4 +1,4 @@
-package dev.rafa.userservice.exception;
+package dev.rafa.commonscore.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;

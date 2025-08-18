@@ -2,7 +2,7 @@ package dev.rafa.animeservice.service;
 
 import dev.rafa.animeservice.domain.Producer;
 import dev.rafa.animeservice.repository.ProducerHardCodedRepository;
-import dev.rafa.exception.NotFoundException;
+import dev.rafa.commonscore.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
