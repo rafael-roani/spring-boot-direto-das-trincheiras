@@ -1,8 +1,8 @@
 package dev.rafa.animeservice.service;
 
 import dev.rafa.animeservice.domain.Anime;
-import dev.rafa.animeservice.exception.NotFoundException;
 import dev.rafa.animeservice.repository.AnimeHardCodedRepository;
+import dev.rafa.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
