@@ -3,6 +3,7 @@ package dev.rafa.userservice.service;
 import dev.rafa.commonscore.exception.NotFoundException;
 import dev.rafa.userservice.domain.User;
 import dev.rafa.userservice.repository.UserHardCodedRepository;
+import dev.rafa.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +15,10 @@ public class UserService {
 
     private final UserHardCodedRepository repository;
 
+    private final UserRepository userRepository;
+
     public List<User> findAll(String name) {
-        return name == null ? repository.findAll() : repository.findByName(name);
+        return name == null ? userRepository.findAll() : repository.findByName(name);
     }
 
     public void delete(Long id) {
