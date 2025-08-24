@@ -3,6 +3,7 @@ package dev.rafa.userservice.service;
 import dev.rafa.userservice.commons.UserUtils;
 import dev.rafa.userservice.domain.User;
 import dev.rafa.userservice.repository.UserHardCodedRepository;
+import dev.rafa.userservice.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,6 +28,9 @@ class UserServiceTest {
     @Mock
     private UserHardCodedRepository repository;
 
+    @Mock
+    private UserRepository userRepository;
+
     private List<User> userList;
 
     @InjectMocks
@@ -41,7 +45,7 @@ class UserServiceTest {
     @Order(1)
     @DisplayName("findAll returns a list with all users when argument is null")
     void findAll_ReturnsAllUsers_WhenArgumentIsNull() {
-        BDDMockito.when(repository.findAll()).thenReturn(userList);
+        BDDMockito.when(userRepository.findAll()).thenReturn(userList);
 
         List<User> users = service.findAll(null);
         org.assertj.core.api.Assertions.assertThat(users)
