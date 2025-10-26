@@ -1,12 +1,11 @@
 package dev.rafa.userservice.service;
 
+import dev.rafa.commonscore.exception.EmailAlreadyExistsException;
 import dev.rafa.commonscore.exception.NotFoundException;
 import dev.rafa.userservice.domain.User;
 import dev.rafa.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -56,7 +55,7 @@ public class UserService {
     }
 
     private void throwEmailExistsException(User user) {
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "E-mail %s already exists".formatted(user.getEmail()));
+        throw new EmailAlreadyExistsException("E-mail %s already exists".formatted(user.getEmail()));
     }
 
 }

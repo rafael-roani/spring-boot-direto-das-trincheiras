@@ -3,16 +3,18 @@ package dev.rafa.userservice.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+@With
 @Getter
 @Setter
 @Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
 
     @Id
+    @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
