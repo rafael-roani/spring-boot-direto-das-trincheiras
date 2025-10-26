@@ -3,7 +3,6 @@ package dev.rafa.userservice.controller;
 import dev.rafa.userservice.commons.FileUtils;
 import dev.rafa.userservice.commons.UserUtils;
 import dev.rafa.userservice.domain.User;
-import dev.rafa.userservice.repository.UserData;
 import dev.rafa.userservice.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
@@ -38,9 +37,6 @@ class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @MockBean
-    private UserData userData;
 
     @MockBean
     private UserRepository repository;
@@ -94,7 +90,6 @@ class UserControllerTest {
     @Order(3)
     @DisplayName("GET v1/users?name=x returns empty list when name is not found")
     void findAll_ReturnsEmptyList_WhenNameIsNotFound() throws Exception {
-        BDDMockito.when(userData.getUsers()).thenReturn(usersList);
         String response = fileUtils.readResourceFile("user/get-user-x-name-200.json");
         String name = "x";
 
@@ -127,7 +122,6 @@ class UserControllerTest {
     @Order(5)
     @DisplayName("GET v1/users/99 throw NotFound 404 when user is not found")
     void findByOd_ThrowsNotFound_WhenUserIsNotFound() throws Exception {
-        BDDMockito.when(userData.getUsers()).thenReturn(usersList);
         String response = fileUtils.readResourceFile("user/get-user-by-id-404.json");
         Long id = 99L;
 
@@ -186,7 +180,6 @@ class UserControllerTest {
     @Order(8)
     @DisplayName("PUT v1/users throw NotFound when user is not found")
     void update_ThrowNotFound_WhenUserIsNotFound() throws Exception {
-        BDDMockito.when(userData.getUsers()).thenReturn(usersList);
         String request = fileUtils.readResourceFile("user/put-request-user-404.json");
         String response = fileUtils.readResourceFile("user/put-user-by-id-404.json");
 
@@ -220,7 +213,6 @@ class UserControllerTest {
     @Order(10)
     @DisplayName("DELETE v1/users/99 throw NotFound when user is not found")
     void delete_ThrowNotFound_WhenUserIsNotFound() throws Exception {
-        BDDMockito.when(userData.getUsers()).thenReturn(usersList);
         String response = fileUtils.readResourceFile("user/delete-user-by-id-404.json");
         Long id = 99L;
 
