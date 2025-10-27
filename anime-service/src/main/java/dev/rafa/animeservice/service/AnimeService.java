@@ -1,7 +1,7 @@
 package dev.rafa.animeservice.service;
 
 import dev.rafa.animeservice.domain.Anime;
-import dev.rafa.animeservice.repository.AnimeHardCodedRepository;
+import dev.rafa.animeservice.repository.AnimeRepository;
 import dev.rafa.commonscore.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,7 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AnimeService {
 
-    private final AnimeHardCodedRepository repository;
+    private final AnimeRepository repository;
 
     public List<Anime> findAll(String name) {
         return name == null ? repository.findAll() : repository.findByName(name);
@@ -25,7 +25,7 @@ public class AnimeService {
 
     public void update(Anime animeToUpdate) {
         assertAnimeExists(animeToUpdate.getId());
-        repository.update(animeToUpdate);
+        repository.save(animeToUpdate);
     }
 
     public void assertAnimeExists(Long id) {
