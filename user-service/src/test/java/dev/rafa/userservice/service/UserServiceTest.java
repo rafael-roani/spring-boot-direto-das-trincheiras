@@ -117,6 +117,8 @@ class UserServiceTest {
         BDDMockito.when(repository.save(userToSave)).thenReturn(userToSave);
         BDDMockito.when(repository.findByEmailIgnoreCase(userToSave.getEmail())).thenReturn(Optional.empty());
 
+        userToSave.setId(1L);
+
         User savedUser = service.save(userToSave);
         Assertions.assertThat(savedUser)
                 .isNotNull()

@@ -139,6 +139,7 @@ class UserControllerTest {
         String response = fileUtils.readResourceFile("user/post-response-user-201.json");
 
         User userToSave = userUtils.newUserToSave();
+        userToSave.setId(1L);
 
         BDDMockito.when(repository.save(ArgumentMatchers.any())).thenReturn(userToSave);
 
