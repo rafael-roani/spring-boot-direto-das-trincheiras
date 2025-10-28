@@ -1,10 +1,9 @@
 package dev.rafa.animeservice.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SourceType;
 
 import java.time.LocalDateTime;
 
@@ -23,6 +22,8 @@ public class Producer {
 
     private String name;
 
+    @CreationTimestamp(source = SourceType.DB)
+    @Column(nullable = false, insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
 }

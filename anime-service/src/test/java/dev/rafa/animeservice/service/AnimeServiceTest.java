@@ -2,7 +2,7 @@ package dev.rafa.animeservice.service;
 
 import dev.rafa.animeservice.commons.AnimeUtils;
 import dev.rafa.animeservice.domain.Anime;
-import dev.rafa.animeservice.repository.AnimeHardCodedRepository;
+import dev.rafa.animeservice.repository.AnimeRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +25,7 @@ class AnimeServiceTest {
     private AnimeService service;
 
     @Mock
-    private AnimeHardCodedRepository repository;
+    private AnimeRepository repository;
 
     private List<Anime> animesList;
 
@@ -155,7 +155,7 @@ class AnimeServiceTest {
 
         BDDMockito.when(repository.findById(animeToUpdate.getId()))
                 .thenReturn(Optional.of(animeToUpdate));
-        BDDMockito.doNothing().when(repository).update(animeToUpdate);
+        BDDMockito.when(repository.save(animeToUpdate)).thenReturn(animeToUpdate);
 
         Assertions.assertThatNoException().isThrownBy(() -> service.update(animeToUpdate));
     }
