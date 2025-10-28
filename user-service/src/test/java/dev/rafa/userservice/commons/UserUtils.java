@@ -36,7 +36,6 @@ public class UserUtils {
 
     public User newUserToSave() {
         return User.builder()
-                .id(99L)
                 .firstName("Rafael")
                 .lastName("Roani")
                 .email("rafael.roani@email.com")
