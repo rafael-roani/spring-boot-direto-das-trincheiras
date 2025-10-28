@@ -6,7 +6,6 @@ import dev.rafa.animeservice.request.AnimePutRequest;
 import dev.rafa.animeservice.response.AnimeGetResponse;
 import dev.rafa.animeservice.response.AnimePostResponse;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 
 import java.util.List;
@@ -14,7 +13,6 @@ import java.util.List;
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface AnimeMapper {
 
-    @Mapping(target = "id", expression = "java(java.util.concurrent.ThreadLocalRandom.current().nextLong(1, 100_000))")
     Anime toAnime(AnimePostRequest postRequest);
 
     AnimePostResponse toAnimePostResponse(Anime anime);

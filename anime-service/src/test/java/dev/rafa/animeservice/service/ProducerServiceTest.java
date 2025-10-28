@@ -2,7 +2,7 @@ package dev.rafa.animeservice.service;
 
 import dev.rafa.animeservice.commons.ProducerUtils;
 import dev.rafa.animeservice.domain.Producer;
-import dev.rafa.animeservice.repository.ProducerHardCodedRepository;
+import dev.rafa.animeservice.repository.ProducerRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +25,7 @@ class ProducerServiceTest {
     private ProducerService service;
 
     @Mock
-    private ProducerHardCodedRepository repository;
+    private ProducerRepository repository;
 
     private List<Producer> producerList;
 
@@ -157,7 +157,7 @@ class ProducerServiceTest {
 
         BDDMockito.when(repository.findById(producerToUpdate.getId()))
                 .thenReturn(Optional.of(producerToUpdate));
-        BDDMockito.doNothing().when(repository).update(producerToUpdate);
+        BDDMockito.when(repository.save(producerToUpdate)).thenReturn(producerToUpdate);
 
         Assertions.assertThatNoException().isThrownBy(() -> service.update(producerToUpdate));
     }

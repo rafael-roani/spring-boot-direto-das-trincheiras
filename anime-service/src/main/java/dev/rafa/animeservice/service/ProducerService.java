@@ -1,7 +1,7 @@
 package dev.rafa.animeservice.service;
 
 import dev.rafa.animeservice.domain.Producer;
-import dev.rafa.animeservice.repository.ProducerHardCodedRepository;
+import dev.rafa.animeservice.repository.ProducerRepository;
 import dev.rafa.commonscore.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,7 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProducerService {
 
-    private final ProducerHardCodedRepository repository;
+    private final ProducerRepository repository;
 
     public List<Producer> findAll(String name) {
         return name == null ? repository.findAll() : repository.findByName(name);
@@ -24,9 +24,12 @@ public class ProducerService {
     }
 
     public void update(Producer producerToUpdate) {
-        Producer producer = findByIdOrThrowNotFound(producerToUpdate.getId());
-        producerToUpdate.setCreatedAt(producer.getCreatedAt());
-        repository.update(producerToUpdate);
+        assertProducerExists(producerToUpdate.getId());
+        repository.save(producerToUpdate);
+    }
+
+    public void assertProducerExists(Long id) {
+        findByIdOrThrowNotFound(id);
     }
 
     public Producer findByIdOrThrowNotFound(Long id) {

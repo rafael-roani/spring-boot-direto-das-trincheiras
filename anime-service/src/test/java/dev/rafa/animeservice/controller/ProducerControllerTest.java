@@ -3,8 +3,8 @@ package dev.rafa.animeservice.controller;
 import dev.rafa.animeservice.commons.FileUtils;
 import dev.rafa.animeservice.commons.ProducerUtils;
 import dev.rafa.animeservice.domain.Producer;
-import dev.rafa.animeservice.repository.ProducerData;
-import dev.rafa.animeservice.repository.ProducerHardCodedRepository;
+import dev.rafa.animeservice.repository.AnimeRepository;
+import dev.rafa.animeservice.repository.ProducerRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,7 +15,6 @@ import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,11 +24,13 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @WebMvcTest(controllers = ProducerController.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ComponentScan(basePackages = {"dev.rafa.animeservice"})
 class ProducerControllerTest {
 
@@ -39,10 +40,10 @@ class ProducerControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private ProducerData producerData;
+    private AnimeRepository animeRepository;
 
-    @SpyBean
-    private ProducerHardCodedRepository repository;
+    @MockBean
+    private ProducerRepository repository;
 
     private List<Producer> producerList;
 
@@ -61,7 +62,7 @@ class ProducerControllerTest {
     @Order(1)
     @DisplayName("GET v1/producers returns a list with all producers when argument is null")
     void findAll_ReturnsAllProducers_WhenArgumentIsNull() throws Exception {
-        BDDMockito.when(producerData.getProducers()).thenReturn(producerList);
+        BDDMockito.when(repository.findAll()).thenReturn(producerList);
         String response = fileUtils.readResourceFile("producer/get-producer-null-name-200.json");
 
         mockMvc.perform(MockMvcRequestBuilders.get(URL))
@@ -74,9 +75,13 @@ class ProducerControllerTest {
     @Order(2)
     @DisplayName("GET v1/producers?name=Ufotable returns a list with found object when name exists")
     void findAll_ReturnsFoundProducerList_WhenNameIsFound() throws Exception {
-        BDDMockito.when(producerData.getProducers()).thenReturn(producerList);
         String response = fileUtils.readResourceFile("producer/get-producer-ufotable-name-200.json");
         String name = "Ufotable";
+        Producer producer = producerList.stream()
+                .filter(p -> p.getName().equals(name))
+                .findFirst()
+                .orElse(null);
+        BDDMockito.when(repository.findByName(name)).thenReturn(Collections.singletonList(producer));
 
         mockMvc.perform(MockMvcRequestBuilders.get(URL).param("name", name))
                 .andDo(MockMvcResultHandlers.print())
@@ -88,7 +93,6 @@ class ProducerControllerTest {
     @Order(3)
     @DisplayName("GET v1/producers?name=x returns empty list when name is not found")
     void findAll_ReturnsEmptyList_WhenNameIsNotFound() throws Exception {
-        BDDMockito.when(producerData.getProducers()).thenReturn(producerList);
         String response = fileUtils.readResourceFile("producer/get-producer-x-name-200.json");
         String name = "x";
 
@@ -102,9 +106,12 @@ class ProducerControllerTest {
     @Order(4)
     @DisplayName("GET v1/producers/1 returns an object with given id")
     void findById_ReturnsProducerById_WhenSuccessful() throws Exception {
-        BDDMockito.when(producerData.getProducers()).thenReturn(producerList);
         String response = fileUtils.readResourceFile("producer/get-producer-by-id-200.json");
         Long id = 1L;
+        Optional<Producer> foundProducer = producerList.stream()
+                .filter(p -> p.getId().equals(id))
+                .findFirst();
+        BDDMockito.when(repository.findById(id)).thenReturn(foundProducer);
 
         mockMvc.perform(MockMvcRequestBuilders.get(URL + "/{id}", id))
                 .andDo(MockMvcResultHandlers.print())
@@ -116,7 +123,6 @@ class ProducerControllerTest {
     @Order(5)
     @DisplayName("GET v1/producers/99 throw NotFound 404 when producer is not found")
     void findByOd_ThrowsNotFound_WhenProducerIsNotFound() throws Exception {
-        BDDMockito.when(producerData.getProducers()).thenReturn(producerList);
         String response = fileUtils.readResourceFile("producer/get-producer-by-id-404.json");
         Long id = 99L;
 
@@ -153,8 +159,12 @@ class ProducerControllerTest {
     @Order(7)
     @DisplayName("PUT v1/producers updates a producer")
     void update_UpdatesProducer_WhenSuccessful() throws Exception {
-        BDDMockito.when(producerData.getProducers()).thenReturn(producerList);
         String request = fileUtils.readResourceFile("producer/put-request-producer-200.json");
+        Long id = 1L;
+        Optional<Producer> foundProducer = producerList.stream()
+                .filter(p -> p.getId().equals(id))
+                .findFirst();
+        BDDMockito.when(repository.findById(id)).thenReturn(foundProducer);
 
         mockMvc.perform(MockMvcRequestBuilders
                                 .put(URL)
@@ -169,7 +179,6 @@ class ProducerControllerTest {
     @Order(8)
     @DisplayName("PUT v1/producers throw NotFound when producer is not found")
     void update_ThrowNotFound_WhenProducerIsNotFound() throws Exception {
-        BDDMockito.when(producerData.getProducers()).thenReturn(producerList);
         String request = fileUtils.readResourceFile("producer/put-request-producer-404.json");
         String response = fileUtils.readResourceFile("producer/put-producer-by-id-404.json");
 
@@ -187,8 +196,11 @@ class ProducerControllerTest {
     @Order(9)
     @DisplayName("DELETE v1/producers/1 removes a producer")
     void delete_RemovesProducer_WhenSuccessful() throws Exception {
-        BDDMockito.when(producerData.getProducers()).thenReturn(producerList);
         Long id = producerList.getFirst().getId();
+        Optional<Producer> foundProducer = producerList.stream()
+                .filter(p -> p.getId().equals(id))
+                .findFirst();
+        BDDMockito.when(repository.findById(id)).thenReturn(foundProducer);
 
         mockMvc.perform(MockMvcRequestBuilders.delete(URL + "/{id}", id))
                 .andDo(MockMvcResultHandlers.print())
@@ -199,7 +211,6 @@ class ProducerControllerTest {
     @Order(10)
     @DisplayName("DELETE v1/producers/99 throw NotFound when producer is not found")
     void delete_ThrowNotFound_WhenProducerIsNotFound() throws Exception {
-        BDDMockito.when(producerData.getProducers()).thenReturn(producerList);
         String response = fileUtils.readResourceFile("producer/delete-producer-by-id-404.json");
         Long id = 99L;
 
