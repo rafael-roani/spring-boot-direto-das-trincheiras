@@ -6,6 +6,7 @@ import dev.rafa.userservice.domain.User;
 import dev.rafa.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -39,6 +40,7 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
+    @Transactional
     public User save(User user) {
         assertEmailDoesNotExist(user.getEmail());
         return repository.save(user);
