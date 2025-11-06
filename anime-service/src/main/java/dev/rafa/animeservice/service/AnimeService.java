@@ -4,6 +4,8 @@ import dev.rafa.animeservice.domain.Anime;
 import dev.rafa.animeservice.repository.AnimeRepository;
 import dev.rafa.commonscore.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +18,10 @@ public class AnimeService {
 
     public List<Anime> findAll(String name) {
         return name == null ? repository.findAll() : repository.findByName(name);
+    }
+
+    public Page<Anime> findAllPaginated(Pageable pageable) {
+        return repository.findAll(pageable);
     }
 
     public void delete(Long id) {
