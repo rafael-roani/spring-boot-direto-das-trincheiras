@@ -1,0 +1,41 @@
+{
+  "content": [
+    {
+      "id": 1,
+      "name": "Ful Metal Brotherhood"
+    },
+    {
+      "id": 2,
+      "name": "Steins Gate"
+    },
+    {
+      "id": 3,
+      "name": "Mashle"
+    }
+  ],
+  "pageable": {
+    "pageNumber": 0,
+    "pageSize": 3,
+    "sort": {
+      "empty": true,
+      "sorted": false,
+      "unsorted": true
+    },
+    "offset": 0,
+    "paged": true,
+    "unpaged": false
+  },
+  "last": true,
+  "totalElements": 3,
+  "totalPages": 1,
+  "sort": {
+    "empty": true,
+    "sorted": false,
+    "unsorted": true
+  },
+  "first": true,
+  "size": 3,
+  "number": 0,
+  "numberOfElements": 3,
+  "empty": false
+}
