@@ -1,13 +1,16 @@
 package dev.rafa.userservice.controller;
 
+import dev.rafa.userservice.domain.User;
 import dev.rafa.userservice.domain.UserProfile;
 import dev.rafa.userservice.mapper.UserProfileMapper;
 import dev.rafa.userservice.response.UserProfileGetResponse;
+import dev.rafa.userservice.response.UserProfileUserGetResponse;
 import dev.rafa.userservice.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,6 +35,17 @@ public class UserProfileController {
         List<UserProfileGetResponse> userProfileGetResponses = mapper.toUserProfileGetResponse(userProfiles);
 
         return ResponseEntity.ok(userProfileGetResponses);
+    }
+
+    @GetMapping("profiles/{id}/users")
+    public ResponseEntity<List<UserProfileUserGetResponse>> findAll(@PathVariable Long id) {
+        log.debug("Request received to list all users by profile id: {}", id);
+
+        List<User> users = service.findAllUsersByProfileId(id);
+
+        List<UserProfileUserGetResponse> responseList = mapper.toUserProfileUserGetResponseList(users);
+
+        return ResponseEntity.ok(responseList);
     }
 
 }
