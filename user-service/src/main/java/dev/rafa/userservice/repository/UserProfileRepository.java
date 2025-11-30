@@ -21,7 +21,7 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Long> 
     @EntityGraph(value = "UserProfile.fullDetails")
     List<UserProfile> findAll();
 
-    @Query("SELECT up.user FROM UserProfile up WHERE up.id = :profileId")
+    @Query("SELECT up.user FROM UserProfile up WHERE up.profile.id = :profileId")
     List<User> findAllUsersByProfileId(Long profileId);
 
 }

@@ -1,0 +1,38 @@
+package dev.rafa.userservice.repository;
+
+import dev.rafa.userservice.commons.UserUtils;
+import dev.rafa.userservice.domain.User;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.jdbc.Sql;
+
+import java.util.List;
+
+@DataJpaTest
+@Import(UserUtils.class)
+@TestMethodOrder(value = MethodOrderer.OrderAnnotation.class)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+class UserProfileRepositoryTest {
+
+    @Autowired
+    private UserProfileRepository repository;
+
+    @Test
+    @Order(2)
+    @Sql(scripts = {"/sql/init_user_profile_2_users_1_profile.sql"})
+    @DisplayName("findAll returns a list with all users by profile id")
+    void findAllUsersByProfileId_ReturnsAllUsersByProfileId_WhenSuccessful() {
+        Long profileId = 1L;
+        List<User> users = repository.findAllUsersByProfileId(profileId);
+        Assertions.assertThat(users).isNotEmpty()
+                .hasSize(2)
+                .doesNotContainNull();
+
+        users.forEach(user -> Assertions.assertThat(user).hasNoNullFieldsOrProperties());
+    }
+
+}
