@@ -4,6 +4,7 @@ import dev.rafa.userservice.commons.FileUtils;
 import dev.rafa.userservice.commons.UserUtils;
 import dev.rafa.userservice.domain.User;
 import dev.rafa.userservice.repository.ProfileRepository;
+import dev.rafa.userservice.repository.UserProfileRepository;
 import dev.rafa.userservice.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
@@ -44,6 +45,9 @@ class UserControllerTest {
 
     @MockBean
     private ProfileRepository profileRepository;
+
+    @MockBean
+    private UserProfileRepository userProfileRepository;
 
     private List<User> usersList;
 
@@ -141,11 +145,9 @@ class UserControllerTest {
     void save_CreatesUser_WhenSuccessful() throws Exception {
         String request = fileUtils.readResourceFile("user/post-request-user-200.json");
         String response = fileUtils.readResourceFile("user/post-response-user-201.json");
+        User userSaved = userUtils.newUserSaved();
 
-        User userToSave = userUtils.newUserToSave();
-        userToSave.setId(1L);
-
-        BDDMockito.when(repository.save(ArgumentMatchers.any())).thenReturn(userToSave);
+        BDDMockito.when(repository.save(ArgumentMatchers.any())).thenReturn(userSaved);
 
         mockMvc.perform(MockMvcRequestBuilders
                                 .post(URL)

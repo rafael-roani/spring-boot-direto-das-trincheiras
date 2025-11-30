@@ -4,6 +4,7 @@ import dev.rafa.userservice.commons.FileUtils;
 import dev.rafa.userservice.commons.ProfileUtils;
 import dev.rafa.userservice.domain.Profile;
 import dev.rafa.userservice.repository.ProfileRepository;
+import dev.rafa.userservice.repository.UserProfileRepository;
 import dev.rafa.userservice.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
@@ -42,6 +43,9 @@ class ProfileControllerTest {
 
     @MockBean
     private UserRepository userRepository;
+
+    @MockBean
+    private UserProfileRepository userProfileRepository;
 
     private List<Profile> profilesList;
 

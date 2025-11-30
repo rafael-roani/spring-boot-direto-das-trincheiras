@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourcePerFileMappings">
-    <file url="file://$PROJECT_DIR$/user-service/src/test/resources/sql/init_one_user.sql" value="b71e1ec7-57b0-4d57-bb08-a1155c9ed0ce" />
+    <file url="file://$PROJECT_DIR$/user-service/src/test/resources/sql/init_one_user.sql" value="5731f31e-675c-4355-963f-665a93d470cc" />
+    <file url="file://$PROJECT_DIR$/user-service/src/test/resources/sql/init_user_profile_2_users_1_profile.sql" value="5731f31e-675c-4355-963f-665a93d470cc" />
     <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/b71e1ec7-57b0-4d57-bb08-a1155c9ed0ce/console.sql" value="b71e1ec7-57b0-4d57-bb08-a1155c9ed0ce" />
   </component>
 </project>

@@ -42,4 +42,13 @@ public class UserUtils {
                 .build();
     }
 
+    public User newUserSaved() {
+        return User.builder()
+                .id(99L)
+                .firstName("Rafael")
+                .lastName("Roani")
+                .email("rafael.roani@email.com")
+                .build();
+    }
+
 }
