@@ -1,18 +1,14 @@
 package dev.rafa.userservice.response;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Setter
 @Getter
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProfilePostResponse {
 
     private Long id;
-
-    private String name;
-
-    private String description;
 
 }
