@@ -107,7 +107,7 @@ class ProfileControllerTest {
                 .andExpect(MockMvcResultMatchers.content().json(response));
     }
 
-    @Order(11)
+    @Order(4)
     @ParameterizedTest
     @MethodSource("postProfileBadRequestSource")
     @DisplayName("POST v1/profiles returns bad request when fields are invalid")
