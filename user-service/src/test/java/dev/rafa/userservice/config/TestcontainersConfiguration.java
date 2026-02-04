@@ -1,5 +1,6 @@
 package dev.rafa.userservice.config;
 
+import org.springframework.boot.devtools.restart.RestartScope;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Bean;
@@ -10,6 +11,7 @@ import org.testcontainers.utility.DockerImageName;
 public class TestcontainersConfiguration {
 
     @Bean
+    @RestartScope
     @ServiceConnection
     MySQLContainer<?> mySQLContainer() {
         return new MySQLContainer<>(DockerImageName.parse("mysql:9.2.0"));

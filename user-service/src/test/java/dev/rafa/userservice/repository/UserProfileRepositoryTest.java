@@ -1,7 +1,7 @@
 package dev.rafa.userservice.repository;
 
 import dev.rafa.userservice.commons.UserUtils;
-import dev.rafa.userservice.config.TestcontainersConfiguration;
+import dev.rafa.userservice.config.IntegrationsTestConfig;
 import dev.rafa.userservice.domain.User;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
@@ -14,10 +14,10 @@ import org.springframework.test.context.jdbc.Sql;
 import java.util.List;
 
 @DataJpaTest
-@Import({UserUtils.class, TestcontainersConfiguration.class})
+@Import(UserUtils.class)
 @TestMethodOrder(value = MethodOrderer.OrderAnnotation.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class UserProfileRepositoryTest {
+class UserProfileRepositoryTest extends IntegrationsTestConfig {
 
     @Autowired
     private UserProfileRepository repository;
