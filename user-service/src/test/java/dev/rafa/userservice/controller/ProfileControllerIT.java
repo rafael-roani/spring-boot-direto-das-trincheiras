@@ -3,7 +3,6 @@ package dev.rafa.userservice.controller;
 import dev.rafa.userservice.commons.FileUtils;
 import dev.rafa.userservice.commons.ProfileUtils;
 import dev.rafa.userservice.config.IntegrationsTestConfig;
-import dev.rafa.userservice.config.TestcontainersConfiguration;
 import dev.rafa.userservice.response.ProfileGetResponse;
 import dev.rafa.userservice.response.ProfilePostResponse;
 import net.javacrumbs.jsonunit.assertj.JsonAssertions;
@@ -15,7 +14,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.test.context.jdbc.Sql;
@@ -26,7 +24,6 @@ import java.util.stream.Stream;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
-@Import(TestcontainersConfiguration.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ProfileControllerIT extends IntegrationsTestConfig {
