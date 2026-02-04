@@ -19,7 +19,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -27,7 +26,6 @@ import java.util.stream.Stream;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
-@Transactional
 @Import(TestcontainersConfiguration.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -46,7 +44,8 @@ class ProfileControllerIT extends IntegrationsTestConfig {
 
     @Test
     @Order(1)
-    @Sql(value = "/sql/init_two_profiles.sql")
+    @Sql(value = "/sql/init_two_profiles.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = "/sql/clean_profiles.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @DisplayName("GET v1/profiles returns a list with all profiles")
     void findAll_ReturnsAllProfiles_WhenSuccessful() throws Exception {
         ParameterizedTypeReference<List<ProfileGetResponse>> typeReference = new ParameterizedTypeReference<>() {};
@@ -55,7 +54,7 @@ class ProfileControllerIT extends IntegrationsTestConfig {
 
         Assertions.assertThat(response).isNotNull();
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        Assertions.assertThat(response.getBody()).isNotNull().doesNotContainNull();
+        Assertions.assertThat(response.getBody()).isNotEmpty().doesNotContainNull();
 
         response.getBody().forEach(r -> Assertions.assertThat(r).hasNoNullFieldsOrProperties());
     }
