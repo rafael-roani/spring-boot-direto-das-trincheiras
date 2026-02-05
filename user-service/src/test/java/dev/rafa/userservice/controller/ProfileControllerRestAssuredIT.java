@@ -14,10 +14,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.stream.Stream;
@@ -112,8 +109,20 @@ class ProfileControllerRestAssuredIT extends IntegrationsTestConfig {
         String request = fileUtils.readResourceFile("profile/%s".formatted(requestFile));
         String expectedResponse = fileUtils.readResourceFile("profile/%s".formatted(responseFile));
 
-        HttpEntity<String> profileEntity = buildHttpEntity(request);
+        String response = RestAssured.given()
+                .contentType(ContentType.JSON).accept(ContentType.JSON)
+                .body(request)
+                .when()
+                .post(URL)
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .log().all()
+                .extract().response().body().asString();
 
+        JsonAssertions.assertThatJson(response)
+                .whenIgnoringPaths("timestamp")
+
+                .isEqualTo(expectedResponse);
     }
 
     private static Stream<Arguments> postProfileBadRequestSource() {
@@ -121,12 +130,6 @@ class ProfileControllerRestAssuredIT extends IntegrationsTestConfig {
                 Arguments.of("post-request-profile-empty-fields-400.json", "post-response-profile-empty-fields-400.json"),
                 Arguments.of("post-request-profile-blank-fields-400.json", "post-response-profile-blank-fields-400.json")
         );
-    }
-
-    private static HttpEntity<String> buildHttpEntity(String body) {
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        return new HttpEntity<>(body, httpHeaders);
     }
 
 }
