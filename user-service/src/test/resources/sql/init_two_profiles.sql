@@ -1,5 +1,5 @@
-INSERT INTO profile (id, description, name)
-VALUES (1, 'Manages everything', 'Admin');
+INSERT INTO profile (id, name, description)
+VALUES (1, 'Administrator', 'Admins everything');
 
-INSERT INTO profile (id, description, name)
-VALUES (2, 'Regular Viewer', 'Viewer');
+INSERT INTO profile (id, name, description)
+VALUES (2, 'Manager', 'Manages users');
