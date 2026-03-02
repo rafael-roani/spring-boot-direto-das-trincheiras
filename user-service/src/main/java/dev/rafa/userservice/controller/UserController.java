@@ -7,10 +7,12 @@ import dev.rafa.userservice.request.UserPutRequest;
 import dev.rafa.userservice.response.UserGetResponse;
 import dev.rafa.userservice.response.UserPostResponse;
 import dev.rafa.userservice.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,13 +22,14 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("v1/users")
+@Tag(name = "User API", description = "User related endpoints")
 public class UserController {
 
     private final UserMapper mapper;
 
     private final UserService service;
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<UserGetResponse>> findAll(@RequestParam(required = false) String name) {
         log.debug("Request received to list all users, param name '{}'", name);
 
