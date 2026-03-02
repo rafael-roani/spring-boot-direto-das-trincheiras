@@ -33,3 +33,4 @@ replay_pid*
 ### dotenv template
 .env
 
+/.idea/inspectionProfiles/Project_Default.xml
