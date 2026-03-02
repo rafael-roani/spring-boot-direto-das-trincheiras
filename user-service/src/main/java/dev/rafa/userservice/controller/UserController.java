@@ -1,5 +1,6 @@
 package dev.rafa.userservice.controller;
 
+import dev.rafa.commonscore.exception.DefaultErrorMessage;
 import dev.rafa.userservice.domain.User;
 import dev.rafa.userservice.mapper.UserMapper;
 import dev.rafa.userservice.request.UserPostRequest;
@@ -7,6 +8,11 @@ import dev.rafa.userservice.request.UserPutRequest;
 import dev.rafa.userservice.response.UserGetResponse;
 import dev.rafa.userservice.response.UserPostResponse;
 import dev.rafa.userservice.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +36,16 @@ public class UserController {
     private final UserService service;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(
+            summary = "Get all users",
+            description = "Get all users available in the system, optionally filtered by name",
+            responses = {
+                    @ApiResponse(
+                            description = "List of users",
+                            responseCode = "200",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = UserGetResponse.class)))
+                    ),
+            })
     public ResponseEntity<List<UserGetResponse>> findAll(@RequestParam(required = false) String name) {
         log.debug("Request received to list all users, param name '{}'", name);
 
@@ -41,6 +57,20 @@ public class UserController {
     }
 
     @GetMapping("{id}")
+    @Operation(
+            summary = "Get user by id",
+            responses = {
+                    @ApiResponse(
+                            description = "Get a user by its id",
+                            responseCode = "200",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = UserGetResponse.class))
+                    ),
+                    @ApiResponse(
+                            description = "User Not Found",
+                            responseCode = "404",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = DefaultErrorMessage.class))
+                    )
+            })
     public ResponseEntity<UserGetResponse> findById(@PathVariable Long id) {
         log.debug("Request to find user by id: {}", id);
 
@@ -52,6 +82,7 @@ public class UserController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<UserPostResponse> save(@RequestBody @Valid UserPostRequest userPostRequest) {
         log.debug("Request to save user: {}", userPostRequest);
 
