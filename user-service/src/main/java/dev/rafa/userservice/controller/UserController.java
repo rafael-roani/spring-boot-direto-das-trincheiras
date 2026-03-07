@@ -1,5 +1,6 @@
 package dev.rafa.userservice.controller;
 
+import dev.rafa.commonscore.exception.ApiError;
 import dev.rafa.commonscore.exception.DefaultErrorMessage;
 import dev.rafa.userservice.domain.User;
 import dev.rafa.userservice.mapper.UserMapper;
@@ -83,6 +84,26 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(
+            summary = "Create a new user",
+            responses = {
+                    @ApiResponse(
+                            description = "Save user in the database",
+                            responseCode = "201",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = UserPostResponse.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            description = "Bad Request",
+                            responseCode = "400",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = ApiError.class)
+                            )
+                    )
+            })
     public ResponseEntity<UserPostResponse> save(@RequestBody @Valid UserPostRequest userPostRequest) {
         log.debug("Request to save user: {}", userPostRequest);
 
