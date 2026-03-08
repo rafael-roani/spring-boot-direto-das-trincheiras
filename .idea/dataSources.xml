@@ -26,7 +26,7 @@
       </jdbc-additional-properties>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="jdbc:mysql://localhost:3306/user_service?useTimezone=true&amp;serverTimezone=UTC&amp;createDatabaseIfNotExist=true [DEBUG]" group="​UserServiceApplication" uuid="047bb498-f9f9-4065-b6c2-82dd5205ac93">
+    <data-source source="LOCAL" name="jdbc:mysql://localhost:3306/user_service?useTimezone=true&amp;serverTimezone=UTC&amp;createDatabaseIfNotExist=true [DEBUG]" group="​UserServiceApplication" uuid="94e376ea-ed96-4c88-a8eb-9b36dbce3679">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <imported>true</imported>
