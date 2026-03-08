@@ -6,7 +6,6 @@ import dev.rafa.userservice.config.IntegrationsTestConfig;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import net.javacrumbs.jsonunit.assertj.JsonAssertions;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -46,32 +45,36 @@ class ProfileControllerRestAssuredIT extends IntegrationsTestConfig {
     @Sql(value = "/sql/clean_profiles.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @DisplayName("GET v1/profiles returns a list with all profiles")
     void findAll_ReturnsAllProfiles_WhenSuccessful() {
-        String response = fileUtils.readResourceFile("profile/get-profiles-200.json");
+        String expectedResponse = fileUtils.readResourceFile("profile/get-profiles-200.json");
 
-        RestAssured.given()
+        String response = RestAssured.given()
                 .contentType(ContentType.JSON).accept(ContentType.JSON)
                 .when()
                 .get(URL)
                 .then()
                 .statusCode(HttpStatus.OK.value())
-                .body(Matchers.equalTo(response))
-                .log().all();
+                .log().all()
+                .extract().response().body().asString();
+
+        JsonAssertions.assertThatJson(response).isEqualTo(expectedResponse);
     }
 
     @Test
     @Order(2)
     @DisplayName("GET v1/profiles returns empty list when nothing is not found")
     void findAll_ReturnsEmptyList_WhenNothingIsNotFound() {
-        String response = fileUtils.readResourceFile("profile/get-profiles-empty-list-200.json");
+        String expectedResponse = fileUtils.readResourceFile("profile/get-profiles-empty-list-200.json");
 
-        RestAssured.given()
+        String response = RestAssured.given()
                 .contentType(ContentType.JSON).accept(ContentType.JSON)
                 .when()
                 .get(URL)
                 .then()
                 .statusCode(HttpStatus.OK.value())
-                .body(Matchers.equalTo(response))
-                .log().all();
+                .log().all()
+                .extract().response().body().asString();
+
+        JsonAssertions.assertThatJson(response).isEqualTo(expectedResponse);
     }
 
     @Test
@@ -121,7 +124,6 @@ class ProfileControllerRestAssuredIT extends IntegrationsTestConfig {
 
         JsonAssertions.assertThatJson(response)
                 .whenIgnoringPaths("timestamp")
-
                 .isEqualTo(expectedResponse);
     }
 

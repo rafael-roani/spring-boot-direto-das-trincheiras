@@ -18,9 +18,6 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.stream.Stream;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -289,8 +286,9 @@ class UserControllerRestAssuredIT extends IntegrationsTestConfig {
     @ParameterizedTest
     @MethodSource("postUserBadRequestSource")
     @DisplayName("POST v1/users returns bad request when fields are invalid")
-    void save_ReturnsBadRequest_WhenFieldsAreEmpty(String fileName, List<String> errors) {
-        String request = fileUtils.readResourceFile("user/%s".formatted(fileName));
+    void save_ReturnsBadRequest_WhenFieldsAreEmpty(String requestFile, String responseFile) {
+        String request = fileUtils.readResourceFile("user/%s".formatted(requestFile));
+        String expectedResponse = fileUtils.readResourceFile("user/%s".formatted(responseFile));
 
         String response = RestAssured.given()
                 .contentType(ContentType.JSON).accept(ContentType.JSON)
@@ -302,16 +300,22 @@ class UserControllerRestAssuredIT extends IntegrationsTestConfig {
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .log().all()
                 .extract().response().body().asString();
+
+        JsonAssertions.assertThatJson(response)
+                .whenIgnoringPaths("timestamp")
+                .when(Option.IGNORING_ARRAY_ORDER)
+                .isEqualTo(expectedResponse);
     }
 
     @Order(12)
     @ParameterizedTest
     @MethodSource("putUserBadRequestSource")
     @DisplayName("PUT v1/users returns bad request when fields are invalid")
-    void update_ReturnsBadRequest_WhenFieldsAreEmpty(String fileName, List<String> errors) throws Exception {
-        String request = fileUtils.readResourceFile("user/%s".formatted(fileName));
+    void update_ReturnsBadRequest_WhenFieldsAreEmpty(String requestFile, String responseFile) throws Exception {
+        String request = fileUtils.readResourceFile("user/%s".formatted(requestFile));
+        String expectedResponse = fileUtils.readResourceFile("user/%s".formatted(responseFile));
 
-        RestAssured.given()
+        String response = RestAssured.given()
                 .contentType(ContentType.JSON).accept(ContentType.JSON)
                 .body(request)
                 .when()
@@ -320,43 +324,27 @@ class UserControllerRestAssuredIT extends IntegrationsTestConfig {
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .log().all()
                 .extract().response().body().asString();
+
+        JsonAssertions.assertThatJson(response)
+                .whenIgnoringPaths("timestamp")
+                .when(Option.IGNORING_ARRAY_ORDER)
+                .isEqualTo(expectedResponse);
     }
 
     private static Stream<Arguments> postUserBadRequestSource() {
-        List<String> allRequiredErrors = allRequiredErrors();
-        List<String> emailInvalidErrors = invalidEmailErrors();
-
         return Stream.of(
-                Arguments.of("post-request-user-empty-fields-400.json", allRequiredErrors),
-                Arguments.of("post-request-user-blank-fields-400.json", allRequiredErrors),
-                Arguments.of("post-request-user-invalid-email-400.json", emailInvalidErrors)
+                Arguments.of("post-request-user-empty-fields-400.json", "post-response-user-empty-fields-400.json"),
+                Arguments.of("post-request-user-blank-fields-400.json", "post-response-user-blank-fields-400.json"),
+                Arguments.of("post-request-user-invalid-email-400.json", "post-response-user-invalid-email-400.json")
         );
     }
 
     private static Stream<Arguments> putUserBadRequestSource() {
-        List<String> allRequiredErrors = allRequiredErrors();
-        List<String> emailInvalidErrors = invalidEmailErrors();
-
-        allRequiredErrors.add("The field 'id' cannot be null");
-
         return Stream.of(
-                Arguments.of("put-request-user-empty-fields-400.json", allRequiredErrors),
-                Arguments.of("put-request-user-blank-fields-400.json", allRequiredErrors),
-                Arguments.of("put-request-user-invalid-email-400.json", emailInvalidErrors)
+                Arguments.of("put-request-user-empty-fields-400.json", "put-response-user-empty-fields-400.json"),
+                Arguments.of("put-request-user-blank-fields-400.json", "put-response-user-blank-fields-400.json"),
+                Arguments.of("put-request-user-invalid-email-400.json", "put-response-user-invalid-email-400.json")
         );
-    }
-
-    private static List<String> allRequiredErrors() {
-        String firstNameRequiredError = "The field 'firstName' is required";
-        String lastNameRequiredError = "The field 'lastName' is required";
-        String emailRequiredError = "The field 'email' is required";
-
-        return new ArrayList<>(List.of(firstNameRequiredError, lastNameRequiredError, emailRequiredError));
-    }
-
-    private static List<String> invalidEmailErrors() {
-        String emailInvalidError = "The e-mail is not valid";
-        return Collections.singletonList(emailInvalidError);
     }
 
 }
