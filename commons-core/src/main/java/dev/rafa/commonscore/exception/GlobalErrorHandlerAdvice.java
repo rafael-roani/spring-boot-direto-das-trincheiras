@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -36,6 +37,8 @@ public class GlobalErrorHandlerAdvice {
                 .getAllErrors()
                 .stream()
                 .map(ObjectError::getDefaultMessage)
+                .filter(Objects::nonNull)
+                .sorted()
                 .collect(Collectors.joining(", "));
 
         ApiError apiError = ApiError.builder()
