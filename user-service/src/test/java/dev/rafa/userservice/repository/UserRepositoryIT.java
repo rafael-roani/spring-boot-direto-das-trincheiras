@@ -11,29 +11,36 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.util.List;
-
 @DataJpaTest
 @Import(UserUtils.class)
 @TestMethodOrder(value = MethodOrderer.OrderAnnotation.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class UserProfileRepositoryTest extends IntegrationsTestConfig {
+class UserRepositoryIT extends IntegrationsTestConfig {
 
     @Autowired
-    private UserProfileRepository repository;
+    private UserRepository repository;
+
+    @Autowired
+    private UserUtils userUtils;
+
+    @Test
+    @Order(1)
+    @DisplayName("Save creates an user")
+    void save_CreatesUser_WhenSuccessful() {
+        User userToSave = userUtils.newUserToSave();
+        User savedUser = repository.save(userToSave);
+
+        Assertions.assertThat(savedUser).hasNoNullFieldsOrProperties();
+        Assertions.assertThat(savedUser.getId()).isPositive();
+    }
 
     @Test
     @Order(2)
-    @Sql(scripts = {"/sql/init_user_profile_2_users_1_profile.sql"})
-    @DisplayName("findAll returns a list with all users by profile id")
-    void findAllUsersByProfileId_ReturnsAllUsersByProfileId_WhenSuccessful() {
-        Long profileId = 1L;
-        List<User> users = repository.findAllUsersByProfileId(profileId);
-        Assertions.assertThat(users).isNotEmpty()
-                .hasSize(2)
-                .doesNotContainNull();
-
-        users.forEach(user -> Assertions.assertThat(user).hasNoNullFieldsOrProperties());
+    @Sql(scripts = {"/sql/init_one_user.sql"})
+    @DisplayName("findAll returns a list with all users")
+    void findAll_ReturnsAllUsers_WhenSuccessful() {
+        Iterable<User> users = repository.findAll();
+        Assertions.assertThat(users).isNotEmpty();
     }
 
 }
