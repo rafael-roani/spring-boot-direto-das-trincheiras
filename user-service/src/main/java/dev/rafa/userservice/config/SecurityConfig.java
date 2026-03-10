@@ -49,9 +49,10 @@ public class SecurityConfig {
 //                )
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
-                        auth ->
-                                auth.requestMatchers(WHITE_LIST).permitAll()
-                                        .anyRequest().authenticated()
+                        auth -> auth
+                                .requestMatchers(WHITE_LIST).permitAll()
+//                                .requestMatchers(HttpMethod.GET, "v1/users").hasRole("ADMIN")
+                                .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
                 .build();
