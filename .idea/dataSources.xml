@@ -26,5 +26,13 @@
       </jdbc-additional-properties>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="jdbc:mysql://localhost:3306/user_service?useTimezone=true&amp;serverTimezone=UTC&amp;createDatabaseIfNotExist=true [DEBUG]" group="​UserServiceApplication" uuid="19305760-b879-4b45-8abe-0428d5d3e571">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <imported>true</imported>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://localhost:3306/user_service?useTimezone=true&amp;serverTimezone=UTC&amp;createDatabaseIfNotExist=true</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>
