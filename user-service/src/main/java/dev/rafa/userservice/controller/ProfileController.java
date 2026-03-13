@@ -6,6 +6,7 @@ import dev.rafa.userservice.request.ProfilePostRequest;
 import dev.rafa.userservice.response.ProfileGetResponse;
 import dev.rafa.userservice.response.ProfilePostResponse;
 import dev.rafa.userservice.service.ProfileService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("v1/profiles")
+@SecurityRequirement(name = "basicAuth")
 public class ProfileController {
 
     private final ProfileService service;

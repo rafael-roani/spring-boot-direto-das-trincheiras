@@ -6,6 +6,7 @@ import dev.rafa.userservice.mapper.UserProfileMapper;
 import dev.rafa.userservice.response.UserProfileGetResponse;
 import dev.rafa.userservice.response.UserProfileUserGetResponse;
 import dev.rafa.userservice.service.UserProfileService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("v1/user-profiles")
+@SecurityRequirement(name = "basicAuth")
 public class UserProfileController {
 
     private final UserProfileService service;
