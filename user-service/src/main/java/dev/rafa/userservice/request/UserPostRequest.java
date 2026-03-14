@@ -28,4 +28,8 @@ public class UserPostRequest {
     @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,10}$", message = "The e-mail is not valid")
     private String email;
 
+    @Schema(description = "The user's password", example = "password", requiredMode = Schema.RequiredMode.REQUIRED)
+    @NotBlank(message = "The field 'password' is required")
+    private String password;
+
 }
