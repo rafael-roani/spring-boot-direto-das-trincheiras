@@ -13,7 +13,7 @@ public class PasswordEncoderMapper {
 
     @EncodedMapping
     public String encode(String password) {
-        return passwordEncoder.encode(password);
+        return password == null ? null : passwordEncoder.encode(password);
     }
 
 }
