@@ -26,8 +26,13 @@ public class UserService {
     }
 
     public void update(User userToUpdate) {
-        assertUserExists(userToUpdate.getId());
+        User savedUser = findByIdOrThrowNotFound(userToUpdate.getId());
         assertEmailDoesNotExist(userToUpdate.getEmail(), userToUpdate.getId());
+
+        userToUpdate.setRoles(savedUser.getRoles());
+        if (userToUpdate.getPassword() == null) {
+            userToUpdate.setPassword(savedUser.getPassword());
+        }
         repository.save(userToUpdate);
     }
 
