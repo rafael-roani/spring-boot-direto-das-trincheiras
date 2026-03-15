@@ -35,4 +35,6 @@ public class UserPutRequest {
     @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "The e-mail is not valid")
     private String email;
 
+    private String password;
+
 }

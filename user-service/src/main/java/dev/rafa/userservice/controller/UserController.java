@@ -52,7 +52,7 @@ public class UserController {
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = UserGetResponse.class)))
                     ),
             })
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<UserGetResponse>> findAll(@RequestParam(required = false) String name) {
         log.debug("Request received to list all users, param name '{}'", name);
 
@@ -123,7 +123,7 @@ public class UserController {
     }
 
     @DeleteMapping("{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.debug("Deleting user by id: {}", id);
 
