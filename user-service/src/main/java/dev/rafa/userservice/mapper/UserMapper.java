@@ -25,6 +25,7 @@ public interface UserMapper {
 
     UserPostResponse toUserPostResponse(User user);
 
+    @Mapping(target = "password", qualifiedBy = EncodedMapping.class)
     User toUser(UserPutRequest request);
 
 }
