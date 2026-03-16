@@ -3,6 +3,8 @@ package dev.rafa.userservice.controller;
 import dev.rafa.userservice.commons.FileUtils;
 import dev.rafa.userservice.commons.UserUtils;
 import dev.rafa.userservice.config.IntegrationsTestConfig;
+import dev.rafa.userservice.domain.User;
+import dev.rafa.userservice.repository.UserRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import net.javacrumbs.jsonunit.assertj.JsonAssertions;
@@ -18,6 +20,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -32,6 +35,9 @@ class UserControllerRestAssuredIT extends IntegrationsTestConfig {
     @Autowired
     private FileUtils fileUtils;
 
+    @Autowired
+    private UserRepository repository;
+
     @LocalServerPort
     private int port;
 
@@ -43,8 +49,8 @@ class UserControllerRestAssuredIT extends IntegrationsTestConfig {
 
     @Test
     @Order(1)
-    @Sql(value = "/sql/init_three_users.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(value = "/sql/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(value = "/sql/user/init_three_users.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @DisplayName("GET v1/users returns a list with all users when argument is null")
     void findAll_ReturnsAllUsers_WhenArgumentIsNull() {
         String expectedResponse = fileUtils.readResourceFile("user/get-user-null-name-200.json");
@@ -74,8 +80,8 @@ class UserControllerRestAssuredIT extends IntegrationsTestConfig {
 
     @Test
     @Order(2)
-    @Sql(value = "/sql/init_three_users.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(value = "/sql/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(value = "/sql/user/init_three_users.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @DisplayName("GET v1/users?name=Pedro returns a list with found object when name exists")
     void findAll_ReturnsFoundUserList_WhenNameIsFound() {
         String expectedResponse = fileUtils.readResourceFile("user/get-user-pedro-name-200.json");
@@ -111,8 +117,8 @@ class UserControllerRestAssuredIT extends IntegrationsTestConfig {
 
     @Test
     @Order(3)
-    @Sql(value = "/sql/init_three_users.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(value = "/sql/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(value = "/sql/user/init_three_users.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @DisplayName("GET v1/users?name=x returns empty list when name is not found")
     void findAll_ReturnsEmptyList_WhenNameIsNotFound() {
         String name = "x";
@@ -134,17 +140,18 @@ class UserControllerRestAssuredIT extends IntegrationsTestConfig {
 
     @Test
     @Order(4)
-    @Sql(value = "/sql/init_one_users.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(value = "/sql/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(value = "/sql/user/init_three_users.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @DisplayName("GET v1/users/1 returns an object with given id")
     void findById_ReturnsUserById_WhenSuccessful() {
-        long id = 1L;
-
         String expectedResponse = fileUtils.readResourceFile("user/get-user-by-id-200.json");
+        List<User> users = repository.findByFirstNameIgnoreCase("Carlos");
+
+        Assertions.assertThat(users).isNotEmpty().hasSize(1);
 
         String response = RestAssured.given()
                 .contentType(ContentType.JSON).accept(ContentType.JSON)
-                .pathParam("id", id)
+                .pathParam("id", users.getFirst().getId())
                 .when()
                 .get(URL + "/{id}")
                 .then()
@@ -152,7 +159,9 @@ class UserControllerRestAssuredIT extends IntegrationsTestConfig {
                 .log().all()
                 .extract().response().body().asString();
 
-        JsonAssertions.assertThatJson(response).isEqualTo(expectedResponse);
+        JsonAssertions.assertThatJson(response)
+                .whenIgnoringPaths("id")
+                .isEqualTo(expectedResponse);
     }
 
     @Test
@@ -177,7 +186,7 @@ class UserControllerRestAssuredIT extends IntegrationsTestConfig {
 
     @Test
     @Order(6)
-    @Sql(value = "/sql/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @DisplayName("POST v1/users creates a user")
     void save_CreatesUser_WhenSuccessful() {
         String request = fileUtils.readResourceFile("user/post-request-user-200.json");
@@ -206,11 +215,15 @@ class UserControllerRestAssuredIT extends IntegrationsTestConfig {
 
     @Test
     @Order(7)
-    @Sql(value = "/sql/init_one_users.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(value = "/sql/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(value = "/sql/user/init_one_user.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @DisplayName("PUT v1/users updates a user")
     void update_UpdatesUser_WhenSuccessful() throws Exception {
         String request = fileUtils.readResourceFile("user/put-request-user-200.json");
+        List<User> users = repository.findByFirstNameIgnoreCase("Carlos");
+
+        Assertions.assertThat(users).isNotEmpty().hasSize(1);
+        request = request.replace("1", users.getFirst().getId().toString());
 
         RestAssured.given()
                 .contentType(ContentType.JSON).accept(ContentType.JSON)
@@ -219,8 +232,7 @@ class UserControllerRestAssuredIT extends IntegrationsTestConfig {
                 .put(URL)
                 .then()
                 .statusCode(HttpStatus.NO_CONTENT.value())
-                .log().all()
-                .extract().response().body().asString();
+                .log().all();
     }
 
     @Test
@@ -245,11 +257,11 @@ class UserControllerRestAssuredIT extends IntegrationsTestConfig {
 
     @Test
     @Order(9)
-    @Sql(value = "/sql/init_one_users.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(value = "/sql/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(value = "/sql/user/init_one_user.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @DisplayName("DELETE v1/users/1 removes a user")
     void delete_RemovesUser_WhenSuccessful() {
-        Long id = 1L;
+        Long id = repository.findAll().getFirst().getId();
 
         RestAssured.given()
                 .contentType(ContentType.JSON).accept(ContentType.JSON)
@@ -258,8 +270,7 @@ class UserControllerRestAssuredIT extends IntegrationsTestConfig {
                 .delete(URL.concat("/{id}"))
                 .then()
                 .statusCode(HttpStatus.NO_CONTENT.value())
-                .log().all()
-                .extract().response().body().asString();
+                .log().all();
     }
 
     @Test

@@ -24,7 +24,7 @@ class UserProfileRepositoryIT extends IntegrationsTestConfig {
 
     @Test
     @Order(2)
-    @Sql(scripts = {"/sql/init_user_profile_2_users_1_profile.sql"})
+    @Sql(scripts = {"/sql/user_profile/init_user_profile_2_users_1_profile.sql"})
     @DisplayName("findAll returns a list with all users by profile id")
     void findAllUsersByProfileId_ReturnsAllUsersByProfileId_WhenSuccessful() {
         Long profileId = 1L;
