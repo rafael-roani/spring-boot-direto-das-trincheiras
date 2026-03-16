@@ -41,8 +41,8 @@ class ProfileControllerRestAssuredIT extends IntegrationsTestConfig {
 
     @Test
     @Order(1)
-    @Sql(value = "/sql/init_two_profiles.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(value = "/sql/clean_profiles.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    @Sql(value = "/sql/profile/init_two_profiles.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = "/sql/profile/clean_profiles.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @DisplayName("GET v1/profiles returns a list with all profiles")
     void findAll_ReturnsAllProfiles_WhenSuccessful() {
         String expectedResponse = fileUtils.readResourceFile("profile/get-profiles-200.json");
