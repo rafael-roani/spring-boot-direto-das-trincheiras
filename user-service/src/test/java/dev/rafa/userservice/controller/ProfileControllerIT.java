@@ -3,6 +3,7 @@ package dev.rafa.userservice.controller;
 import dev.rafa.userservice.commons.FileUtils;
 import dev.rafa.userservice.commons.ProfileUtils;
 import dev.rafa.userservice.config.IntegrationsTestConfig;
+import dev.rafa.userservice.config.TestRestTemplateConfig;
 import dev.rafa.userservice.response.ProfileGetResponse;
 import dev.rafa.userservice.response.ProfilePostResponse;
 import net.javacrumbs.jsonunit.assertj.JsonAssertions;
@@ -25,7 +26,7 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = TestRestTemplateConfig.class)
 class ProfileControllerIT extends IntegrationsTestConfig {
 
     private static final String URL = "/v1/profiles";

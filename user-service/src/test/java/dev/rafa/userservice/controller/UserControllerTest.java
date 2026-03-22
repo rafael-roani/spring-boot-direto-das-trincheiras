@@ -15,9 +15,10 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+@WithMockUser
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @WebMvcTest(controllers = UserController.class)
 @ComponentScan(basePackages = {"dev.rafa.userservice"})
@@ -40,13 +42,13 @@ class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private UserRepository repository;
 
-    @MockBean
+    @MockitoBean
     private ProfileRepository profileRepository;
 
-    @MockBean
+    @MockitoBean
     private UserProfileRepository userProfileRepository;
 
     private List<User> usersList;
@@ -64,6 +66,7 @@ class UserControllerTest {
 
     @Test
     @Order(1)
+    @WithMockUser(authorities = "ADMIN")
     @DisplayName("GET v1/users returns a list with all users when argument is null")
     void findAll_ReturnsAllUsers_WhenArgumentIsNull() throws Exception {
         BDDMockito.when(repository.findAll()).thenReturn(usersList);
@@ -77,6 +80,7 @@ class UserControllerTest {
 
     @Test
     @Order(2)
+    @WithMockUser(authorities = "ADMIN")
     @DisplayName("GET v1/users?name=Pedro returns a list with found object when name exists")
     void findAll_ReturnsFoundUserList_WhenNameIsFound() throws Exception {
         String response = fileUtils.readResourceFile("user/get-user-pedro-name-200.json");
@@ -96,6 +100,7 @@ class UserControllerTest {
 
     @Test
     @Order(3)
+    @WithMockUser(authorities = "ADMIN")
     @DisplayName("GET v1/users?name=x returns empty list when name is not found")
     void findAll_ReturnsEmptyList_WhenNameIsNotFound() throws Exception {
         String response = fileUtils.readResourceFile("user/get-user-x-name-200.json");
@@ -141,6 +146,7 @@ class UserControllerTest {
 
     @Test
     @Order(6)
+    @WithMockUser(authorities = "ADMIN")
     @DisplayName("POST v1/users creates a user")
     void save_CreatesUser_WhenSuccessful() throws Exception {
         String request = fileUtils.readResourceFile("user/post-request-user-200.json");
@@ -202,6 +208,7 @@ class UserControllerTest {
 
     @Test
     @Order(9)
+    @WithMockUser(authorities = "ADMIN")
     @DisplayName("DELETE v1/users/1 removes a user")
     void delete_RemovesUser_WhenSuccessful() throws Exception {
         Long id = usersList.getFirst().getId();
@@ -218,6 +225,7 @@ class UserControllerTest {
 
     @Test
     @Order(10)
+    @WithMockUser(authorities = "ADMIN")
     @DisplayName("DELETE v1/users/99 throw NotFound when user is not found")
     void delete_ThrowNotFound_WhenUserIsNotFound() throws Exception {
         String response = fileUtils.readResourceFile("user/delete-user-by-id-404.json");
