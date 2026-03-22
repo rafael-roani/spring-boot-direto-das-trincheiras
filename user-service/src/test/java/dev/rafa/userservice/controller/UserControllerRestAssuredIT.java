@@ -3,10 +3,12 @@ package dev.rafa.userservice.controller;
 import dev.rafa.userservice.commons.FileUtils;
 import dev.rafa.userservice.commons.UserUtils;
 import dev.rafa.userservice.config.IntegrationsTestConfig;
+import dev.rafa.userservice.config.RestAssuredConfig;
 import dev.rafa.userservice.domain.User;
 import dev.rafa.userservice.repository.UserRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
 import net.javacrumbs.jsonunit.assertj.JsonAssertions;
 import net.javacrumbs.jsonunit.core.Option;
 import org.assertj.core.api.Assertions;
@@ -15,8 +17,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -24,7 +26,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = RestAssuredConfig.class)
 class UserControllerRestAssuredIT extends IntegrationsTestConfig {
 
     private static final String URL = "/v1/users";
@@ -38,13 +40,17 @@ class UserControllerRestAssuredIT extends IntegrationsTestConfig {
     @Autowired
     private UserRepository repository;
 
-    @LocalServerPort
-    private int port;
+    @Autowired
+    @Qualifier(value = "requestSpecificationRegularUser")
+    private RequestSpecification requestSpecificationRegularUser;
+
+    @Autowired
+    @Qualifier(value = "requestSpecificationAdminUser")
+    private RequestSpecification requestSpecificationAdminUser;
 
     @BeforeEach
     void setUrl() {
-        RestAssured.baseURI = "http://localhost";
-        RestAssured.port = port;
+        RestAssured.requestSpecification = requestSpecificationRegularUser;
     }
 
     @Test
@@ -53,6 +59,8 @@ class UserControllerRestAssuredIT extends IntegrationsTestConfig {
     @Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @DisplayName("GET v1/users returns a list with all users when argument is null")
     void findAll_ReturnsAllUsers_WhenArgumentIsNull() {
+        RestAssured.requestSpecification = requestSpecificationAdminUser;
+
         String expectedResponse = fileUtils.readResourceFile("user/get-user-null-name-200.json");
 
         String response = RestAssured.given()
@@ -84,6 +92,8 @@ class UserControllerRestAssuredIT extends IntegrationsTestConfig {
     @Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @DisplayName("GET v1/users?name=Pedro returns a list with found object when name exists")
     void findAll_ReturnsFoundUserList_WhenNameIsFound() {
+        RestAssured.requestSpecification = requestSpecificationAdminUser;
+
         String expectedResponse = fileUtils.readResourceFile("user/get-user-pedro-name-200.json");
         String name = "Pedro";
 
@@ -121,6 +131,8 @@ class UserControllerRestAssuredIT extends IntegrationsTestConfig {
     @Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @DisplayName("GET v1/users?name=x returns empty list when name is not found")
     void findAll_ReturnsEmptyList_WhenNameIsNotFound() {
+        RestAssured.requestSpecification = requestSpecificationAdminUser;
+
         String name = "x";
 
         String response = RestAssured.given()
@@ -166,6 +178,8 @@ class UserControllerRestAssuredIT extends IntegrationsTestConfig {
 
     @Test
     @Order(5)
+    @Sql(value = "/sql/user/init_three_users.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @DisplayName("GET v1/users/99 throw NotFound 404 when user is not found")
     void findByOd_ThrowsNotFound_WhenUserIsNotFound() {
         String expectedResponse = fileUtils.readResourceFile("user/get-user-by-id-404.json");
