@@ -1,5 +1,6 @@
 package dev.rafa.userservice.controller;
 
+import dev.rafa.commonscore.exception.NotFoundException;
 import dev.rafa.userservice.commons.FileUtils;
 import dev.rafa.userservice.commons.UserUtils;
 import dev.rafa.userservice.config.IntegrationsTestConfig;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
@@ -36,6 +38,9 @@ class UserControllerRestAssuredIT extends IntegrationsTestConfig {
 
     @Autowired
     private FileUtils fileUtils;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserRepository repository;
@@ -235,6 +240,7 @@ class UserControllerRestAssuredIT extends IntegrationsTestConfig {
     void update_UpdatesUser_WhenSuccessful() throws Exception {
         String request = fileUtils.readResourceFile("user/put-request-user-200.json");
         List<User> users = repository.findByFirstNameIgnoreCase("Carlos");
+        User oldUser = users.getFirst();
 
         Assertions.assertThat(users).isNotEmpty().hasSize(1);
         request = request.replace("1", users.getFirst().getId().toString());
@@ -247,10 +253,18 @@ class UserControllerRestAssuredIT extends IntegrationsTestConfig {
                 .then()
                 .statusCode(HttpStatus.NO_CONTENT.value())
                 .log().all();
+
+        User updatedUser = repository.findById(oldUser.getId())
+                .orElseThrow(() -> new NotFoundException("user not found"));
+        String encryptedPassword = updatedUser.getPassword();
+
+        Assertions.assertThat(passwordEncoder.matches("new_password", encryptedPassword)).isTrue();
     }
 
     @Test
     @Order(8)
+    @Sql(value = "/sql/user/init_one_user.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @DisplayName("PUT v1/users throw NotFound when user is not found")
     void update_ThrowNotFound_WhenUserIsNotFound() {
         String request = fileUtils.readResourceFile("user/put-request-user-404.json");
@@ -271,10 +285,12 @@ class UserControllerRestAssuredIT extends IntegrationsTestConfig {
 
     @Test
     @Order(9)
-    @Sql(value = "/sql/user/init_one_user.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = "/sql/user/init_three_users.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @DisplayName("DELETE v1/users/1 removes a user")
     void delete_RemovesUser_WhenSuccessful() {
+        RestAssured.requestSpecification = requestSpecificationAdminUser;
+
         Long id = repository.findAll().getFirst().getId();
 
         RestAssured.given()
@@ -289,8 +305,12 @@ class UserControllerRestAssuredIT extends IntegrationsTestConfig {
 
     @Test
     @Order(10)
+    @Sql(value = "/sql/user/init_three_users.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @DisplayName("DELETE v1/users/99 throw NotFound when user is not found")
     void delete_ThrowNotFound_WhenUserIsNotFound() {
+        RestAssured.requestSpecification = requestSpecificationAdminUser;
+
         String expectedResponse = fileUtils.readResourceFile("user/delete-user-by-id-404.json");
         Long id = 99L;
 
@@ -335,6 +355,8 @@ class UserControllerRestAssuredIT extends IntegrationsTestConfig {
     @Order(12)
     @ParameterizedTest
     @MethodSource("putUserBadRequestSource")
+    @Sql(value = "/sql/user/init_one_user.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @DisplayName("PUT v1/users returns bad request when fields are invalid")
     void update_ReturnsBadRequest_WhenFieldsAreEmpty(String requestFile, String responseFile) throws Exception {
         String request = fileUtils.readResourceFile("user/%s".formatted(requestFile));

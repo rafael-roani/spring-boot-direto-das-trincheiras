@@ -2,5 +2,6 @@
   "id": 1,
   "firstName": "Rafael",
   "lastName": "Roani",
-  "email": "rafael.roani@email.com"
+  "email": "rafael.roani@email.com",
+  "password": "new_password"
 }
