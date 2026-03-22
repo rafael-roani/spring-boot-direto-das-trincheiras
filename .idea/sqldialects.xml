@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="SqlDialectMappings">
-    <file url="file://$PROJECT_DIR$/user-service/src/test/resources/data.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/user-service/src/test/resources/schema.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/user-service/src/test/resources/sql/profile/clean_profiles.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/user-service/src/test/resources/sql/profile/init_two_profiles.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/user-service/src/test/resources/sql/user/clean_users.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/user-service/src/test/resources/sql/user/init_one_login_regular_user.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/user-service/src/test/resources/sql/user/init_one_user.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/user-service/src/test/resources/sql/user/init_three_users.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/user-service/src/test/resources/sql/user_profile/init_user_profile_2_users_1_profile.sql" dialect="MySQL" />
