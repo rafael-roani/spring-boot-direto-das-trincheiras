@@ -18,10 +18,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlMergeMode;
 
 import java.util.stream.Stream;
 
+@SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Sql(value = "/sql/user/init_one_login_regular_user.sql")
+@Sql(value = "/sql/user/clean_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = RestAssuredConfig.class)
 class ProfileControllerRestAssuredIT extends IntegrationsTestConfig {
 
