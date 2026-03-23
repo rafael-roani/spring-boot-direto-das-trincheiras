@@ -7,6 +7,7 @@ import dev.rafa.animeservice.request.AnimePutRequest;
 import dev.rafa.animeservice.response.AnimeGetResponse;
 import dev.rafa.animeservice.response.AnimePostResponse;
 import dev.rafa.animeservice.service.AnimeService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("v1/animes")
+@SecurityRequirement(name = "basicAuth")
 public class AnimeController {
 
     private final AnimeMapper mapper;

@@ -7,6 +7,7 @@ import dev.rafa.animeservice.request.ProducerPutRequest;
 import dev.rafa.animeservice.response.ProducerGetResponse;
 import dev.rafa.animeservice.response.ProducerPostResponse;
 import dev.rafa.animeservice.service.ProducerService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("v1/producers")
+@SecurityRequirement(name = "basicAuth")
 public class ProducerController {
 
     private final ProducerMapper mapper;
