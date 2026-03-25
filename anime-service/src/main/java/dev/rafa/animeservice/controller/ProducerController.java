@@ -31,7 +31,7 @@ public class ProducerController {
     private final ProducerService service;
 
     @GetMapping
-    public ResponseEntity<List<ProducerGetResponse>> findAll(@RequestParam(required = false) String name) {
+    public ResponseEntity<List<ProducerGetResponse>> findAllProducers(@RequestParam(required = false) String name) {
         log.debug("Request received to list all producers, param name '{}'", name);
 
         List<Producer> producers = service.findAll(name);
@@ -42,7 +42,7 @@ public class ProducerController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<ProducerGetResponse> findById(@PathVariable Long id) {
+    public ResponseEntity<ProducerGetResponse> findProducerById(@PathVariable Long id) {
         log.debug("Request to find producer by id: {}", id);
 
         Producer producer = service.findByIdOrThrowNotFound(id);
@@ -53,7 +53,7 @@ public class ProducerController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE,
             headers = "X-api-key")
-    public ResponseEntity<ProducerPostResponse> save(@RequestBody @Valid ProducerPostRequest producerPostRequest, @RequestHeader HttpHeaders headers) {
+    public ResponseEntity<ProducerPostResponse> saveProducer(@RequestBody @Valid ProducerPostRequest producerPostRequest, @RequestHeader HttpHeaders headers) {
         log.info("headers: {}", headers.toSingleValueMap());
         log.debug("Saving producer: {}", producerPostRequest);
 
@@ -67,7 +67,7 @@ public class ProducerController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteProducerById(@PathVariable Long id) {
         log.debug("Deleting producer by id: {}", id);
 
         service.delete(id);
@@ -76,7 +76,7 @@ public class ProducerController {
     }
 
     @PutMapping
-    public ResponseEntity<Void> update(@RequestBody @Valid ProducerPutRequest request) {
+    public ResponseEntity<Void> updateProducer(@RequestBody @Valid ProducerPutRequest request) {
         log.debug("Updating producer: {}", request);
 
         Producer producerToUpdate = mapper.toProducer(request);
