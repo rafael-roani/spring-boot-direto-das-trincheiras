@@ -7,6 +7,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="anime-api-client" />
       </profile>
       <profile name="Annotation profile for spring-boot-direto-das-trincheiras" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
