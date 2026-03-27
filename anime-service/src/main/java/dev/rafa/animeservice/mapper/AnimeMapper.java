@@ -1,12 +1,10 @@
 package dev.rafa.animeservice.mapper;
 
 import dev.rafa.animeservice.domain.Anime;
-import dev.rafa.animeservice.request.AnimePostRequest;
-import dev.rafa.animeservice.request.AnimePutRequest;
-import dev.rafa.animeservice.response.AnimeGetResponse;
-import dev.rafa.animeservice.response.AnimePostResponse;
+import dev.rafa.dto.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -22,5 +20,7 @@ public interface AnimeMapper {
     List<AnimeGetResponse> toAnimeGetResponseList(List<Anime> animes);
 
     Anime toAnime(AnimePutRequest request);
+
+    PageAnimeGetResponse toPageAnimeGetResponse(Page<Anime> jpaPageAnime);
 
 }
