@@ -2,11 +2,9 @@ package dev.rafa.animeservice.controller;
 
 import dev.rafa.animeservice.domain.Anime;
 import dev.rafa.animeservice.mapper.AnimeMapper;
-import dev.rafa.animeservice.request.AnimePostRequest;
-import dev.rafa.animeservice.request.AnimePutRequest;
-import dev.rafa.animeservice.response.AnimeGetResponse;
-import dev.rafa.animeservice.response.AnimePostResponse;
 import dev.rafa.animeservice.service.AnimeService;
+import dev.rafa.api.AnimeControllerApi;
+import dev.rafa.dto.*;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("v1/animes")
 @SecurityRequirement(name = "basicAuth")
-public class AnimeController {
+public class AnimeController implements AnimeControllerApi {
 
     private final AnimeMapper mapper;
 
@@ -43,11 +41,12 @@ public class AnimeController {
     }
 
     @GetMapping("/paginated")
-    public ResponseEntity<Page<AnimeGetResponse>> findAllAnimesPaginated(@ParameterObject Pageable pageable) {
+    public ResponseEntity<PageAnimeGetResponse> findAllAnimesPaginated(@ParameterObject final Pageable pageable) {
         log.debug("Request received to list all paginated");
 
-        Page<AnimeGetResponse> pageAnimeGetResponse = service.findAllPaginated(pageable)
-                .map(mapper::toAnimeGetResponse);
+        Page<Anime> jpaPageAnime = service.findAllPaginated(pageable);
+        PageAnimeGetResponse pageAnimeGetResponse = mapper.toPageAnimeGetResponse(jpaPageAnime);
+
         return ResponseEntity.ok(pageAnimeGetResponse);
     }
 
