@@ -2,16 +2,16 @@ package dev.rafa.animeservice.controller;
 
 import dev.rafa.animeservice.domain.Producer;
 import dev.rafa.animeservice.mapper.ProducerMapper;
-import dev.rafa.animeservice.request.ProducerPostRequest;
-import dev.rafa.animeservice.request.ProducerPutRequest;
-import dev.rafa.animeservice.response.ProducerGetResponse;
-import dev.rafa.animeservice.response.ProducerPostResponse;
 import dev.rafa.animeservice.service.ProducerService;
+import dev.rafa.api.ProducerControllerApi;
+import dev.rafa.dto.ProducerGetResponse;
+import dev.rafa.dto.ProducerPostRequest;
+import dev.rafa.dto.ProducerPostResponse;
+import dev.rafa.dto.ProducerPutRequest;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("v1/producers")
 @SecurityRequirement(name = "basicAuth")
-public class ProducerController {
+public class ProducerController implements ProducerControllerApi {
 
     private final ProducerMapper mapper;
 
@@ -53,8 +53,7 @@ public class ProducerController {
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE,
             headers = "X-api-key")
-    public ResponseEntity<ProducerPostResponse> saveProducer(@RequestBody @Valid ProducerPostRequest producerPostRequest, @RequestHeader HttpHeaders headers) {
-        log.info("headers: {}", headers.toSingleValueMap());
+    public ResponseEntity<ProducerPostResponse> saveProducer(@RequestBody @Valid ProducerPostRequest producerPostRequest) {
         log.debug("Saving producer: {}", producerPostRequest);
 
         Producer producer = mapper.toProducer(producerPostRequest);

@@ -1,10 +1,10 @@
 package dev.rafa.animeservice.mapper;
 
 import dev.rafa.animeservice.domain.Producer;
-import dev.rafa.animeservice.request.ProducerPostRequest;
-import dev.rafa.animeservice.request.ProducerPutRequest;
-import dev.rafa.animeservice.response.ProducerGetResponse;
-import dev.rafa.animeservice.response.ProducerPostResponse;
+import dev.rafa.dto.ProducerGetResponse;
+import dev.rafa.dto.ProducerPostRequest;
+import dev.rafa.dto.ProducerPostResponse;
+import dev.rafa.dto.ProducerPutRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 
