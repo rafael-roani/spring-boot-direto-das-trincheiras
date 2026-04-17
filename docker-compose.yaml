@@ -1,3 +1,8 @@
+x-database-variables: &database-variables
+  SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/anime_service?useTimezone=true&serverTimezone=UTC&createDatabaseIfNotExist=true
+  ENV_ROOT_USERNAME: root
+  ENV_ROOT_PASSWORD: root
+
 services:
   mysql:
     image: mysql:9.4
@@ -10,6 +15,15 @@ services:
       - "3306:3306"
     volumes:
       - devdojo-db:/var/lib/mysql
+
+  anime-service:
+    image: rafaelroani/anime-service:0.0.2-SNAPSHOT
+    container_name: anime-service
+    ports:
+      - "8080:8080"
+      - "8989:8989"
+    environment:
+      <<: *database-variables
 
   prometheus:
     image: prom/prometheus:v3.11.0
