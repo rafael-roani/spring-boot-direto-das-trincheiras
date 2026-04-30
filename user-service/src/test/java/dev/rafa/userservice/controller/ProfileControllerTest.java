@@ -2,10 +2,11 @@ package dev.rafa.userservice.controller;
 
 import dev.rafa.userservice.commons.FileUtils;
 import dev.rafa.userservice.commons.ProfileUtils;
+import dev.rafa.userservice.config.SecurityConfig;
 import dev.rafa.userservice.domain.Profile;
+import dev.rafa.userservice.mapper.ProfileMapperImpl;
 import dev.rafa.userservice.repository.ProfileRepository;
-import dev.rafa.userservice.repository.UserProfileRepository;
-import dev.rafa.userservice.repository.UserRepository;
+import dev.rafa.userservice.service.ProfileService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -32,7 +33,13 @@ import java.util.stream.Stream;
 @WithMockUser
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @WebMvcTest(controllers = ProfileController.class)
-@Import({FileUtils.class, ProfileUtils.class})
+@Import({
+        FileUtils.class,
+        ProfileUtils.class,
+        ProfileService.class,
+        ProfileMapperImpl.class,
+        SecurityConfig.class
+})
 class ProfileControllerTest {
 
     private static final String URL = "/v1/profiles";
@@ -42,12 +49,6 @@ class ProfileControllerTest {
 
     @MockitoBean
     private ProfileRepository repository;
-
-    @MockitoBean
-    private UserRepository userRepository;
-
-    @MockitoBean
-    private UserProfileRepository userProfileRepository;
 
     private List<Profile> profilesList;
 

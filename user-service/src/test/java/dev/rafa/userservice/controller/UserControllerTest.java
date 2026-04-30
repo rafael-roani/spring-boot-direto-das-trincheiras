@@ -2,10 +2,13 @@ package dev.rafa.userservice.controller;
 
 import dev.rafa.userservice.commons.FileUtils;
 import dev.rafa.userservice.commons.UserUtils;
+import dev.rafa.userservice.config.PasswordEncoderConfig;
+import dev.rafa.userservice.config.SecurityConfig;
 import dev.rafa.userservice.domain.User;
-import dev.rafa.userservice.repository.ProfileRepository;
-import dev.rafa.userservice.repository.UserProfileRepository;
+import dev.rafa.userservice.mapper.PasswordEncoderMapper;
+import dev.rafa.userservice.mapper.UserMapperImpl;
 import dev.rafa.userservice.repository.UserRepository;
+import dev.rafa.userservice.service.UserService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,7 +18,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -34,7 +37,15 @@ import java.util.stream.Stream;
 @WithMockUser
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @WebMvcTest(controllers = UserController.class)
-@ComponentScan(basePackages = {"dev.rafa.userservice"})
+@Import({
+        FileUtils.class,
+        UserUtils.class,
+        UserService.class,
+        UserMapperImpl.class,
+        PasswordEncoderMapper.class,
+        PasswordEncoderConfig.class,
+        SecurityConfig.class
+})
 class UserControllerTest {
 
     private static final String URL = "/v1/users";
@@ -44,12 +55,6 @@ class UserControllerTest {
 
     @MockitoBean
     private UserRepository repository;
-
-    @MockitoBean
-    private ProfileRepository profileRepository;
-
-    @MockitoBean
-    private UserProfileRepository userProfileRepository;
 
     private List<User> usersList;
 
