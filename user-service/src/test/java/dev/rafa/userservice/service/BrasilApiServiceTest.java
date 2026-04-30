@@ -2,9 +2,11 @@ package dev.rafa.userservice.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.rafa.commonscore.exception.NotFoundException;
 import dev.rafa.userservice.commons.CepUtils;
 import dev.rafa.userservice.config.BrasilApiConfigurationProperties;
 import dev.rafa.userservice.config.RestClientConfiguration;
+import dev.rafa.userservice.response.CepErrorResponse;
 import dev.rafa.userservice.response.CepGetResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
@@ -55,6 +57,7 @@ public class BrasilApiServiceTest {
 
     @Order(1)
     @Test
+    @DisplayName("findCep returns a CepGetResponse when successful")
     public void findCep_ReturnsCepGetResponse_WhenSuccessful() throws JsonProcessingException {
         server = MockRestServiceServer.bindTo(brasilApiClient).build();
 
@@ -70,6 +73,30 @@ public class BrasilApiServiceTest {
         Assertions.assertThat(service.findCep(cep))
                 .isNotNull()
                 .isEqualTo(cepGetResponse);
+    }
+
+    @Order(1)
+    @Test
+    @DisplayName("findCep returns a CepErrorResponse when unsuccessful")
+    public void findCep_ReturnsCepErrorResponse_WhenUnsuccessful() throws JsonProcessingException {
+        server = MockRestServiceServer.bindTo(brasilApiClient).build();
+
+        String cep = "43215678";
+        CepErrorResponse cepErrorResponse = cepUtils.newCepErrorResponse();
+        String jsonResponse = mapper.writeValueAsString(cepErrorResponse);
+        String expectedErrorMessage = "404 NOT_FOUND \"CepErrorResponse[name=CepPromiseError, message=Todos os serviços de CEP retornaram erro., type=service_error, errors=[CepInnerErrorResponse[name=ServiceError, message=CEP INVÁLIDO, service=correios]]]\"";
+
+        RequestMatcher requestTo = MockRestRequestMatchers.requestToUriTemplate(properties.baseUrl() + properties.cepUri(), cep);
+        DefaultResponseCreator withSuccess = MockRestResponseCreators.withResourceNotFound()
+                .body(jsonResponse)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        server.expect(requestTo).andRespond(withSuccess);
+
+        Assertions.assertThatException()
+                .isThrownBy(() -> service.findCep(cep))
+                .withMessage(expectedErrorMessage)
+                .isInstanceOf(NotFoundException.class);
     }
 
 }
