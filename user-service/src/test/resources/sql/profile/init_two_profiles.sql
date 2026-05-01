@@ -1,3 +1,6 @@
+DELETE
+FROM profile;
+
 INSERT INTO profile (id, name, description)
 VALUES (1, 'Administrator', 'Admins everything');
 

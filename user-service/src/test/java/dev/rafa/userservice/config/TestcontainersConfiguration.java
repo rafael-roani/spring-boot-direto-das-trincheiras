@@ -14,7 +14,8 @@ public class TestcontainersConfiguration {
   @RestartScope
   @ServiceConnection
   MySQLContainer<?> mySQLContainer() {
-    return new MySQLContainer<>(DockerImageName.parse("mysql:9.2.0"));
+    return new MySQLContainer<>(DockerImageName.parse("mysql:9.2.0"))
+        .withDatabaseName("user_service");
   }
 
 }
