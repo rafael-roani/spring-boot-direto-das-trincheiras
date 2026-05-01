@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/api/cep/v1/43215678"
+  },
+  "response": {
+    "status": 404,
+    "bodyFileName": "get-cep-response-404.json",
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
