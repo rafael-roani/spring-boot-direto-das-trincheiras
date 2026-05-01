@@ -5,22 +5,21 @@ import dev.rafa.dto.ProducerGetResponse;
 import dev.rafa.dto.ProducerPostRequest;
 import dev.rafa.dto.ProducerPostResponse;
 import dev.rafa.dto.ProducerPutRequest;
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
-
-import java.util.List;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ProducerMapper {
 
-    Producer toProducer(ProducerPostRequest postRequest);
+  Producer toProducer(ProducerPostRequest postRequest);
 
-    ProducerGetResponse toProducerGetResponse(Producer producer);
+  Producer toProducer(ProducerPutRequest request);
 
-    List<ProducerGetResponse> toProducerGetResponseList(List<Producer> producers);
+  ProducerGetResponse toProducerGetResponse(Producer producer);
 
-    Producer toProducer(ProducerPutRequest request);
+  List<ProducerGetResponse> toProducerGetResponseList(List<Producer> producers);
 
-    ProducerPostResponse toProducerPostResponse(Producer producer);
+  ProducerPostResponse toProducerPostResponse(Producer producer);
 
 }

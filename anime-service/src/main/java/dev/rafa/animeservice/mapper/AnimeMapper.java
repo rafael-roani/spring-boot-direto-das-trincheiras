@@ -1,26 +1,29 @@
 package dev.rafa.animeservice.mapper;
 
 import dev.rafa.animeservice.domain.Anime;
-import dev.rafa.dto.*;
+import dev.rafa.dto.AnimeGetResponse;
+import dev.rafa.dto.AnimePostRequest;
+import dev.rafa.dto.AnimePostResponse;
+import dev.rafa.dto.AnimePutRequest;
+import dev.rafa.dto.PageAnimeGetResponse;
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.springframework.data.domain.Page;
 
-import java.util.List;
-
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface AnimeMapper {
 
-    Anime toAnime(AnimePostRequest postRequest);
+  Anime toAnime(AnimePostRequest postRequest);
 
-    AnimePostResponse toAnimePostResponse(Anime anime);
+  Anime toAnime(AnimePutRequest request);
 
-    AnimeGetResponse toAnimeGetResponse(Anime anime);
+  AnimePostResponse toAnimePostResponse(Anime anime);
 
-    List<AnimeGetResponse> toAnimeGetResponseList(List<Anime> animes);
+  AnimeGetResponse toAnimeGetResponse(Anime anime);
 
-    Anime toAnime(AnimePutRequest request);
+  List<AnimeGetResponse> toAnimeGetResponseList(List<Anime> animes);
 
-    PageAnimeGetResponse toPageAnimeGetResponse(Page<Anime> jpaPageAnime);
+  PageAnimeGetResponse toPageAnimeGetResponse(Page<Anime> jpaPageAnime);
 
 }
