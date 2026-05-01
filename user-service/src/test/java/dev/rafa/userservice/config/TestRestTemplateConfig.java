@@ -1,13 +1,15 @@
 package dev.rafa.userservice.config;
 
+import static dev.rafa.userservice.commons.Constants.BASE_URI;
+import static dev.rafa.userservice.commons.Constants.PASSWORD;
+import static dev.rafa.userservice.commons.Constants.REGULAR_USERNAME;
+
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.web.util.DefaultUriBuilderFactory;
-
-import static dev.rafa.userservice.commons.Constants.*;
 
 /**
  * @author Rafael Roani Gonçalves
@@ -17,19 +19,19 @@ import static dev.rafa.userservice.commons.Constants.*;
 @TestConfiguration
 public class TestRestTemplateConfig {
 
-    @LocalServerPort
-    private int port;
+  @LocalServerPort
+  private int port;
 
-    @Bean
-    public TestRestTemplate testRestTemplate() {
-        DefaultUriBuilderFactory uri = new DefaultUriBuilderFactory(BASE_URI + port);
+  @Bean
+  public TestRestTemplate testRestTemplate() {
+    DefaultUriBuilderFactory uri = new DefaultUriBuilderFactory(BASE_URI + port);
 
-        TestRestTemplate testRestTemplate = new TestRestTemplate()
-                .withBasicAuth(REGULAR_USERNAME, PASSWORD);
+    TestRestTemplate testRestTemplate = new TestRestTemplate()
+        .withBasicAuth(REGULAR_USERNAME, PASSWORD);
 
-        testRestTemplate.setUriTemplateHandler(uri);
+    testRestTemplate.setUriTemplateHandler(uri);
 
-        return testRestTemplate;
-    }
+    return testRestTemplate;
+  }
 
 }

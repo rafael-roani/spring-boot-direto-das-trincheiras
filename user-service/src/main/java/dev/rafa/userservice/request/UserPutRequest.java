@@ -14,27 +14,27 @@ import lombok.ToString;
 @ToString
 public class UserPutRequest {
 
-    @Schema(description = "The user's id", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
-    @Min(value = 1, message = "The field 'id' must be greater than zero")
-    @NotNull(message = "The field 'id' cannot be null")
-    private Long id;
+  @Schema(description = "The user's id", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
+  @Min(value = 1, message = "The field 'id' must be greater than zero")
+  @NotNull(message = "The field 'id' cannot be null")
+  private Long id;
 
-    @Schema(description = "The user's first name", example = "John", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotBlank(message = "The field 'firstName' is required")
-    private String firstName;
+  @Schema(description = "The user's first name", example = "John", requiredMode = Schema.RequiredMode.REQUIRED)
+  @NotBlank(message = "The field 'firstName' is required")
+  private String firstName;
 
-    @Schema(description = "The user's last name", example = "Doe", requiredMode = Schema.RequiredMode.REQUIRED)
-    @NotBlank(message = "The field 'lastName' is required")
-    private String lastName;
+  @Schema(description = "The user's last name", example = "Doe", requiredMode = Schema.RequiredMode.REQUIRED)
+  @NotBlank(message = "The field 'lastName' is required")
+  private String lastName;
 
-    @Schema(description = "The user's email. Must be unique",
-            example = "johndoe@email.com",
-            requiredMode = Schema.RequiredMode.REQUIRED
-    )
-    @NotBlank(message = "The field 'email' is required")
-    @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "The e-mail is not valid")
-    private String email;
+  @Schema(description = "The user's email. Must be unique",
+      example = "johndoe@email.com",
+      requiredMode = Schema.RequiredMode.REQUIRED
+  )
+  @NotBlank(message = "The field 'email' is required")
+  @Email(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "The e-mail is not valid")
+  private String email;
 
-    private String password;
+  private String password;
 
 }

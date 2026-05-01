@@ -9,10 +9,10 @@ import lombok.ToString;
 @ToString
 public class ProfileGetResponse {
 
-    private Long id;
+  private Long id;
 
-    private String name;
+  private String name;
 
-    private String description;
+  private String description;
 
 }

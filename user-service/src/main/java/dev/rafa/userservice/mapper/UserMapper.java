@@ -6,26 +6,25 @@ import dev.rafa.userservice.request.UserPostRequest;
 import dev.rafa.userservice.request.UserPutRequest;
 import dev.rafa.userservice.response.UserGetResponse;
 import dev.rafa.userservice.response.UserPostResponse;
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 
-import java.util.List;
-
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, uses = PasswordEncoderMapper.class)
 public interface UserMapper {
 
-    List<UserGetResponse> toUserGetResponseList(List<User> users);
+  List<UserGetResponse> toUserGetResponseList(List<User> users);
 
-    UserGetResponse toUserGetResponse(User user);
+  UserGetResponse toUserGetResponse(User user);
 
-    @Mapping(target = "roles", constant = "USER")
-    @Mapping(target = "password", qualifiedBy = EncodedMapping.class)
-    User toUser(UserPostRequest userPostRequest);
+  @Mapping(target = "roles", constant = "USER")
+  @Mapping(target = "password", qualifiedBy = EncodedMapping.class)
+  User toUser(UserPostRequest userPostRequest);
 
-    UserPostResponse toUserPostResponse(User user);
+  @Mapping(target = "password", qualifiedBy = EncodedMapping.class)
+  User toUser(UserPutRequest request);
 
-    @Mapping(target = "password", qualifiedBy = EncodedMapping.class)
-    User toUser(UserPutRequest request);
+  UserPostResponse toUserPostResponse(User user);
 
 }

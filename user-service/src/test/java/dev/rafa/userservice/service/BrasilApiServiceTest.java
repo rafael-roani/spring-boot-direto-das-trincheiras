@@ -9,7 +9,12 @@ import dev.rafa.userservice.config.RestClientConfiguration;
 import dev.rafa.userservice.response.CepErrorResponse;
 import dev.rafa.userservice.response.CepGetResponse;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
@@ -22,81 +27,81 @@ import org.springframework.test.web.client.response.MockRestResponseCreators;
 import org.springframework.web.client.RestClient;
 
 @RestClientTest({
-        BrasilApiService.class,
-        RestClientConfiguration.class,
-        BrasilApiConfigurationProperties.class,
-        ObjectMapper.class,
-        CepUtils.class
+    BrasilApiService.class,
+    RestClientConfiguration.class,
+    BrasilApiConfigurationProperties.class,
+    ObjectMapper.class,
+    CepUtils.class
 })
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class BrasilApiServiceTest {
 
-    @Autowired
-    private BrasilApiService service;
+  @Autowired
+  private BrasilApiService service;
 
-    @Autowired
-    @Qualifier("brasilApiClient")
-    private RestClient.Builder brasilApiClient;
+  @Autowired
+  @Qualifier("brasilApiClient")
+  private RestClient.Builder brasilApiClient;
 
-    @Autowired
-    private MockRestServiceServer server;
+  @Autowired
+  private MockRestServiceServer server;
 
-    @Autowired
-    private BrasilApiConfigurationProperties properties;
+  @Autowired
+  private BrasilApiConfigurationProperties properties;
 
-    @Autowired
-    private ObjectMapper mapper;
+  @Autowired
+  private ObjectMapper mapper;
 
-    @Autowired
-    private CepUtils cepUtils;
+  @Autowired
+  private CepUtils cepUtils;
 
-    @AfterEach
-    void reset() {
-        server.reset();
-    }
+  @AfterEach
+  void reset() {
+    server.reset();
+  }
 
-    @Order(1)
-    @Test
-    @DisplayName("findCep returns a CepGetResponse when successful")
-    public void findCep_ReturnsCepGetResponse_WhenSuccessful() throws JsonProcessingException {
-        server = MockRestServiceServer.bindTo(brasilApiClient).build();
+  @Order(1)
+  @Test
+  @DisplayName("findCep returns a CepGetResponse when successful")
+  public void findCep_ReturnsCepGetResponse_WhenSuccessful() throws JsonProcessingException {
+    server = MockRestServiceServer.bindTo(brasilApiClient).build();
 
-        String cep = "12345678";
-        CepGetResponse cepGetResponse = cepUtils.newCepGetResponse();
-        String jsonResponse = mapper.writeValueAsString(cepGetResponse);
+    String cep = "12345678";
+    CepGetResponse cepGetResponse = cepUtils.newCepGetResponse();
+    String jsonResponse = mapper.writeValueAsString(cepGetResponse);
 
-        RequestMatcher requestTo = MockRestRequestMatchers.requestToUriTemplate(properties.baseUrl() + properties.cepUri(), cep);
-        DefaultResponseCreator withSuccess = MockRestResponseCreators.withSuccess(jsonResponse, MediaType.APPLICATION_JSON);
+    RequestMatcher requestTo = MockRestRequestMatchers.requestToUriTemplate(properties.baseUrl() + properties.cepUri(), cep);
+    DefaultResponseCreator withSuccess = MockRestResponseCreators.withSuccess(jsonResponse, MediaType.APPLICATION_JSON);
 
-        server.expect(requestTo).andRespond(withSuccess);
+    server.expect(requestTo).andRespond(withSuccess);
 
-        Assertions.assertThat(service.findCep(cep))
-                .isNotNull()
-                .isEqualTo(cepGetResponse);
-    }
+    Assertions.assertThat(service.findCep(cep))
+        .isNotNull()
+        .isEqualTo(cepGetResponse);
+  }
 
-    @Order(1)
-    @Test
-    @DisplayName("findCep returns a CepErrorResponse when unsuccessful")
-    public void findCep_ReturnsCepErrorResponse_WhenUnsuccessful() throws JsonProcessingException {
-        server = MockRestServiceServer.bindTo(brasilApiClient).build();
+  @Order(1)
+  @Test
+  @DisplayName("findCep returns a CepErrorResponse when unsuccessful")
+  public void findCep_ReturnsCepErrorResponse_WhenUnsuccessful() throws JsonProcessingException {
+    server = MockRestServiceServer.bindTo(brasilApiClient).build();
 
-        String cep = "43215678";
-        CepErrorResponse cepErrorResponse = cepUtils.newCepErrorResponse();
-        String jsonResponse = mapper.writeValueAsString(cepErrorResponse);
-        String expectedErrorMessage = "404 NOT_FOUND \"CepErrorResponse[name=CepPromiseError, message=Todos os serviços de CEP retornaram erro., type=service_error, errors=[CepInnerErrorResponse[name=ServiceError, message=CEP INVÁLIDO, service=correios]]]\"";
+    String cep = "43215678";
+    CepErrorResponse cepErrorResponse = cepUtils.newCepErrorResponse();
+    String jsonResponse = mapper.writeValueAsString(cepErrorResponse);
+    String expectedErrorMessage = "404 NOT_FOUND \"CepErrorResponse[name=CepPromiseError, message=Todos os serviços de CEP retornaram erro., type=service_error, errors=[CepInnerErrorResponse[name=ServiceError, message=CEP INVÁLIDO, service=correios]]]\"";
 
-        RequestMatcher requestTo = MockRestRequestMatchers.requestToUriTemplate(properties.baseUrl() + properties.cepUri(), cep);
-        DefaultResponseCreator withSuccess = MockRestResponseCreators.withResourceNotFound()
-                .body(jsonResponse)
-                .contentType(MediaType.APPLICATION_JSON);
+    RequestMatcher requestTo = MockRestRequestMatchers.requestToUriTemplate(properties.baseUrl() + properties.cepUri(), cep);
+    DefaultResponseCreator withSuccess = MockRestResponseCreators.withResourceNotFound()
+        .body(jsonResponse)
+        .contentType(MediaType.APPLICATION_JSON);
 
-        server.expect(requestTo).andRespond(withSuccess);
+    server.expect(requestTo).andRespond(withSuccess);
 
-        Assertions.assertThatException()
-                .isThrownBy(() -> service.findCep(cep))
-                .withMessage(expectedErrorMessage)
-                .isInstanceOf(NotFoundException.class);
-    }
+    Assertions.assertThatException()
+        .isThrownBy(() -> service.findCep(cep))
+        .withMessage(expectedErrorMessage)
+        .isInstanceOf(NotFoundException.class);
+  }
 
 }

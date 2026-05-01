@@ -1,13 +1,16 @@
 package dev.rafa.userservice.config;
 
+import static dev.rafa.userservice.commons.Constants.ADMIN_USERNAME;
+import static dev.rafa.userservice.commons.Constants.BASE_URI;
+import static dev.rafa.userservice.commons.Constants.PASSWORD;
+import static dev.rafa.userservice.commons.Constants.REGULAR_USERNAME;
+
 import io.restassured.RestAssured;
 import io.restassured.specification.RequestSpecification;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
-
-import static dev.rafa.userservice.commons.Constants.*;
 
 /**
  * @author Rafael Roani Gonçalves

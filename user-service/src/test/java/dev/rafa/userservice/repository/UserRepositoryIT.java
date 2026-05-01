@@ -4,7 +4,11 @@ import dev.rafa.userservice.commons.UserUtils;
 import dev.rafa.userservice.config.IntegrationsTestConfig;
 import dev.rafa.userservice.domain.User;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -17,30 +21,30 @@ import org.springframework.test.context.jdbc.Sql;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class UserRepositoryIT extends IntegrationsTestConfig {
 
-    @Autowired
-    private UserRepository repository;
+  @Autowired
+  private UserRepository repository;
 
-    @Autowired
-    private UserUtils userUtils;
+  @Autowired
+  private UserUtils userUtils;
 
-    @Test
-    @Order(1)
-    @DisplayName("Save creates an user")
-    void save_CreatesUser_WhenSuccessful() {
-        User userToSave = userUtils.newUserToSave();
-        User savedUser = repository.save(userToSave);
+  @Test
+  @Order(1)
+  @DisplayName("Save creates an user")
+  void save_CreatesUser_WhenSuccessful() {
+    User userToSave = userUtils.newUserToSave();
+    User savedUser = repository.save(userToSave);
 
-        Assertions.assertThat(savedUser).hasNoNullFieldsOrProperties();
-        Assertions.assertThat(savedUser.getId()).isPositive();
-    }
+    Assertions.assertThat(savedUser).hasNoNullFieldsOrProperties();
+    Assertions.assertThat(savedUser.getId()).isPositive();
+  }
 
-    @Test
-    @Order(2)
-    @Sql(scripts = {"/sql/user/init_one_user.sql"})
-    @DisplayName("findAll returns a list with all users")
-    void findAll_ReturnsAllUsers_WhenSuccessful() {
-        Iterable<User> users = repository.findAll();
-        Assertions.assertThat(users).isNotEmpty();
-    }
+  @Test
+  @Order(2)
+  @Sql(scripts = {"/sql/user/init_one_user.sql"})
+  @DisplayName("findAll returns a list with all users")
+  void findAll_ReturnsAllUsers_WhenSuccessful() {
+    Iterable<User> users = repository.findAll();
+    Assertions.assertThat(users).isNotEmpty();
+  }
 
 }

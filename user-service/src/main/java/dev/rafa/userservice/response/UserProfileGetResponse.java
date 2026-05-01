@@ -9,18 +9,18 @@ import lombok.ToString;
 @ToString
 public class UserProfileGetResponse {
 
-    private Long id;
+  private Long id;
 
-    private User user;
+  private User user;
 
-    private Profile profile;
+  private Profile profile;
 
-    public record User(Long id, String firstName) {
+  public record User(Long id, String firstName) {
 
-    }
+  }
 
-    public record Profile(Long id, String name) {
+  public record Profile(Long id, String name) {
 
-    }
+  }
 
 }

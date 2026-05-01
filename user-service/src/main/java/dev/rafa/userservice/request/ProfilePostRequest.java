@@ -10,10 +10,10 @@ import lombok.ToString;
 @ToString
 public class ProfilePostRequest {
 
-    @NotBlank(message = "The field 'name' is required")
-    private String name;
+  @NotBlank(message = "The field 'name' is required")
+  private String name;
 
-    @NotBlank(message = "The field 'description' is required")
-    private String description;
+  @NotBlank(message = "The field 'description' is required")
+  private String description;
 
 }

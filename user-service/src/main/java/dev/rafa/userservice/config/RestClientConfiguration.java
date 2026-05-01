@@ -14,7 +14,7 @@ public class RestClientConfiguration {
     @Bean(name = "brasilApiClient")
     public RestClient.Builder brasilApiClient() {
         return RestClient.builder()
-                .baseUrl(brasilApiConfigurationProperties.baseUrl());
+            .baseUrl(brasilApiConfigurationProperties.baseUrl());
     }
 
 }

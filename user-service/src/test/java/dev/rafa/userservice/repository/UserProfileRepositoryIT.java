@@ -3,15 +3,18 @@ package dev.rafa.userservice.repository;
 import dev.rafa.userservice.commons.UserUtils;
 import dev.rafa.userservice.config.IntegrationsTestConfig;
 import dev.rafa.userservice.domain.User;
+import java.util.List;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
-
-import java.util.List;
 
 @DataJpaTest
 @Import(UserUtils.class)
@@ -19,21 +22,21 @@ import java.util.List;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class UserProfileRepositoryIT extends IntegrationsTestConfig {
 
-    @Autowired
-    private UserProfileRepository repository;
+  @Autowired
+  private UserProfileRepository repository;
 
-    @Test
-    @Order(2)
-    @Sql(scripts = {"/sql/user_profile/init_user_profile_2_users_1_profile.sql"})
-    @DisplayName("findAll returns a list with all users by profile id")
-    void findAllUsersByProfileId_ReturnsAllUsersByProfileId_WhenSuccessful() {
-        Long profileId = 1L;
-        List<User> users = repository.findAllUsersByProfileId(profileId);
-        Assertions.assertThat(users).isNotEmpty()
-                .hasSize(2)
-                .doesNotContainNull();
+  @Test
+  @Order(2)
+  @Sql(scripts = {"/sql/user_profile/init_user_profile_2_users_1_profile.sql"})
+  @DisplayName("findAll returns a list with all users by profile id")
+  void findAllUsersByProfileId_ReturnsAllUsersByProfileId_WhenSuccessful() {
+    Long profileId = 1L;
+    List<User> users = repository.findAllUsersByProfileId(profileId);
+    Assertions.assertThat(users).isNotEmpty()
+        .hasSize(2)
+        .doesNotContainNull();
 
-        users.forEach(user -> Assertions.assertThat(user).hasNoNullFieldsOrProperties());
-    }
+    users.forEach(user -> Assertions.assertThat(user).hasNoNullFieldsOrProperties());
+  }
 
 }

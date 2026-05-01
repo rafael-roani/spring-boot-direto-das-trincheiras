@@ -1,6 +1,10 @@
 package dev.rafa.commonscore.exception;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -9,14 +13,14 @@ import lombok.*;
 @AllArgsConstructor
 public class ApiError {
 
-    int status;
+  int status;
 
-    String timestamp;
+  String timestamp;
 
-    String error;
+  String error;
 
-    String message;
+  String message;
 
-    String path;
+  String path;
 
 }

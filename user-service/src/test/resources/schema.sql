@@ -19,7 +19,8 @@
 -- Table structure for table `profile`
 --
 
-set foreign_key_checks = 0;
+set
+foreign_key_checks = 0;
 
 DROP TABLE IF EXISTS `profile`;
 /*!40101 SET @saved_cs_client = @@character_set_client */;
@@ -91,4 +92,5 @@ CREATE TABLE `user_profile`
 /*!40101 SET COLLATION_CONNECTION = @OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES = @OLD_SQL_NOTES */;
 
-set foreign_key_checks = 1;
+set
+foreign_key_checks = 1;

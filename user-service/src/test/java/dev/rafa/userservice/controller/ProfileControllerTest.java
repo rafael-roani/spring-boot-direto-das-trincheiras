@@ -7,8 +7,16 @@ import dev.rafa.userservice.domain.Profile;
 import dev.rafa.userservice.mapper.ProfileMapperImpl;
 import dev.rafa.userservice.repository.ProfileRepository;
 import dev.rafa.userservice.service.ProfileService;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -26,19 +34,15 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Stream;
-
 @WithMockUser
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @WebMvcTest(controllers = ProfileController.class)
 @Import({
-        FileUtils.class,
-        ProfileUtils.class,
-        ProfileService.class,
-        ProfileMapperImpl.class,
-        SecurityConfig.class
+    FileUtils.class,
+    ProfileUtils.class,
+    ProfileService.class,
+    ProfileMapperImpl.class,
+    SecurityConfig.class
 })
 class ProfileControllerTest {
 
@@ -71,9 +75,9 @@ class ProfileControllerTest {
         String response = fileUtils.readResourceFile("profile/get-profiles-200.json");
 
         mockMvc.perform(MockMvcRequestBuilders.get(URL))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json(response));
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(MockMvcResultMatchers.content().json(response));
     }
 
     @Test
@@ -83,9 +87,9 @@ class ProfileControllerTest {
         String response = fileUtils.readResourceFile("profile/get-profiles-empty-list-200.json");
 
         mockMvc.perform(MockMvcRequestBuilders.get(URL))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().json(response));
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(MockMvcResultMatchers.content().json(response));
     }
 
     @Test
@@ -100,14 +104,14 @@ class ProfileControllerTest {
         BDDMockito.when(repository.save(ArgumentMatchers.any())).thenReturn(profileSaved);
 
         mockMvc.perform(MockMvcRequestBuilders
-                                .post(URL)
-                                .content(request)
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.content().json(response));
+                .post(URL)
+                .content(request)
+                .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().isCreated())
+            .andExpect(MockMvcResultMatchers.content().json(response));
     }
 
     @Order(4)
@@ -118,28 +122,28 @@ class ProfileControllerTest {
         String request = fileUtils.readResourceFile("profile/%s".formatted(fileName));
 
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-                                                      .post(URL)
-                                                      .content(request)
-                                                      .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andReturn();
+                .post(URL)
+                .content(request)
+                .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andDo(MockMvcResultHandlers.print())
+            .andExpect(MockMvcResultMatchers.status().isBadRequest())
+            .andReturn();
 
         Exception resolvedException = mvcResult.getResolvedException();
 
         Assertions.assertThat(resolvedException).isNotNull();
 
         Assertions.assertThat(resolvedException.getMessage())
-                .contains(errors);
+            .contains(errors);
     }
 
     private static Stream<Arguments> postProfileBadRequestSource() {
         List<String> allRequiredErrors = allRequiredErrors();
 
         return Stream.of(
-                Arguments.of("post-request-profile-empty-fields-400.json", allRequiredErrors),
-                Arguments.of("post-request-profile-blank-fields-400.json", allRequiredErrors)
+            Arguments.of("post-request-profile-empty-fields-400.json", allRequiredErrors),
+            Arguments.of("post-request-profile-blank-fields-400.json", allRequiredErrors)
         );
     }
 
